@@ -53,19 +53,6 @@ app.post("/login", (req, res) => {
     });
   });
 
-/* Add hotel guests into DB
-app.post("/guests", (req, res) => {
-  const { firstname, lastname }= req.body;
-  try {
-  hotelGuestsDB.run(`INSERT INTO guests (firstname, lastname) VALUES (?,?)`, [firstname, lastname],
-    function (err) {
-      if (err)
-      return res.status(400).json({ success: false })})
-} catch (e) {
-  res.json({ success: false })
-}
-})*/
-
 app.post("/create-products", async (req, res) => {
   try {
     // Product 1
