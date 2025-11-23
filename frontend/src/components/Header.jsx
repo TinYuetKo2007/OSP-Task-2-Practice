@@ -15,6 +15,7 @@ function Header () {
                 <div>
                 <Link to={"/"}>Main Page</Link>
                 <Link to={"/add-song"}>Upload Page</Link>
+                <Link to="/products">Tickets/Booking</Link>
                 <Link to={"/contact"}>Contact</Link>
                 
                 </div>

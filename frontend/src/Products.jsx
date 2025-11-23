@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "./components/Header.jsx"
 import ProductDisplay from "./components/ProductDisplay.jsx";
+import { Link } from "react-router-dom"
 const products = [
     {
         name: "Zoo Ticket",
@@ -37,7 +38,12 @@ export default function Products() {
   }, []);
 
   return message ? (
+    <>
+    <Header/>
     <Message message={message} />
+    <Link onClick={() => window.location.href="/products"}>s</Link>
+    </>
+    
   ) : (
     <>
     <Header/>

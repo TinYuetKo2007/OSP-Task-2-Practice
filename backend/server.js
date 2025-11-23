@@ -60,7 +60,7 @@ app.post("/create-checkout-session", async (req, res) => {
     line_items: [{ price: priceId, quantity: 1 }],
     mode: "payment",
     success_url: `${ process.env.CLIENT_URL }/products?success=true`,
-    cancel_url: `${ process.env.CLIENT_URL }/products`
+    cancel_url: `${ process.env.CLIENT_URL }/products?canceled=true`
   });
   res.redirect(session.url) // For forms with no onSubmit, takes user to payment
 } catch (err) {
