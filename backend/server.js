@@ -16,7 +16,7 @@ app.use(cors({
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
 }));
-
+app.use(express.urlencoded({ extended: true }));
 // REGISTER NEW USER
 
 app.post("/signup", async (req, res) => {
@@ -89,14 +89,14 @@ app.post("/create-products", async (req, res) => {
 app.post("/create-checkout-session", async (req, res) => {
   try {
   const { priceId } = req.body;
-  console.log(priceId)
+  console.log( req.body )
   const session = await stripe.checkout.sessions.create({
     line_items: [{ price: priceId, quantity: 1 }],
     mode: "payment",
     success_url: `${ process.env.CLIENT_URL }/checkout-success`,
     cancel_url: `${ process.env.CLIENT_URL }/cart`
   });
-  res.send({url: session.url})
+  res.redirect(session.url)
 } catch (err) {
   res.status(500).json({ error: err.message });
 }

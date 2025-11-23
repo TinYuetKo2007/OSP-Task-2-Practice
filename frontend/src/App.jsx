@@ -16,7 +16,7 @@ function App() {
     <nav>
       <List />
       <Link to={"/aboutus"}>About Us</Link>
-      <Link to={"/buyticket"}>Buy Ticket</Link>
+      <Link to={"/products"}>Buy Ticket</Link>
       <AudioPlayer audioSrc={song} />
     </nav>
     </div>
