@@ -9,20 +9,32 @@ function SignUp() {
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
-    const handleRegister = async (e) => {
+ const handleRegister = async (e) => {
         e.preventDefault();
-        const res = await fetch("http://localhost:4000/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify( username, password ),
-        });
-        const data = await res.json();
-        if (data.success) {
-            setMessage("Registration successful! Redirecting...");
-            setTimeout(() => navigate("/profile"), 1000);
-            localStorage.setItem('username', username);
-        } else {
-            setMessage(data.message);
+
+        if (!username || !password) {
+            setMessage("Please enter username and password.");
+            return;
+        }
+
+        try {
+            const res = await fetch("http://localhost:4000/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                localStorage.setItem("username", username);
+                setMessage("Registration successful! Redirecting...");
+                setTimeout(() => navigate("/profile"), 1000);
+            } else {
+                setMessage(data.message || "Registration failed.");
+            }
+        } catch (err) {
+            setMessage("Server error. Please try again later.");
         }
     };
 
