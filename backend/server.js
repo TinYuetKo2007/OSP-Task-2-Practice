@@ -10,8 +10,7 @@ const cors = require ("cors")
 
 app.get("/", (req, res) => res.send("Connection successful"));
 
-app.use(cors());
-app.use(bodyParser.json);
+app.use(bodyParser.json());
 app.use(cors({
     origin: "http://localhost.5173",
     methods: ["GET", "POST"],
@@ -46,7 +45,7 @@ app.post("/login", (req, res) => {
       // Compare passwords
       const match = await bcrypt.compare(password, row.password);
       if (match) {
-        res.json({ success: true, message: "Login successful", user: row.email });
+        res.json({ success: true, message: "Login successful", user: row.username });
       } else {
         res.status(401).json({ success: false, message: "Invalid password" });
       }
@@ -91,7 +90,7 @@ app.post("/create-checkout-session", async (req, res) => {
   try {
   const { priceId } = req.body;
   console.log(priceId)
-  const session = await stripe_key.checkout.sessions.create({
+  const session = await stripe.checkout.sessions.create({
     line_items: [{ price: priceId, quantity: 1 }],
     mode: "payment",
     success_url: `${ process.env.CLIENT_URL }/checkout-success`,
