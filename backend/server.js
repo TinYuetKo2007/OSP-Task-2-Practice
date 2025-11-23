@@ -12,7 +12,7 @@ app.get("/", (req, res) => res.send("Connection successful"));
 
 app.use(bodyParser.json());
 app.use(cors({
-    origin: "http://localhost.5173",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
 }));
@@ -96,7 +96,7 @@ app.post("/create-checkout-session", async (req, res) => {
     success_url: `${ process.env.CLIENT_URL }/checkout-success`,
     cancel_url: `${ process.env.CLIENT_URL }/cart`
   });
-  res.redirect(session.url)
+  res.redirect(session.url) // For forms with no onSubmit, takes user to payment
 } catch (err) {
   res.status(500).json({ error: err.message });
 }
