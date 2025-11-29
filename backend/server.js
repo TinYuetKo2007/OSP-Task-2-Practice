@@ -10,7 +10,10 @@ const cors = require ("cors")
 
 app.get("/", (req, res) => res.send("Connection successful"));
 
+// Middleware looks at code before request is sent to server
 app.use(bodyParser.json());
+// converts body into object
+
 app.use(cors({
     origin: "http://localhost:5173",
     methods: ["GET", "POST"],
