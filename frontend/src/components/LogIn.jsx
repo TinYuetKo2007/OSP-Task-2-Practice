@@ -25,13 +25,12 @@ function Login() {
       setMessage("Login successful!");
       // ✅ redirect to dashboard after 1 second
       localStorage.setItem('username', username);
+      localStorage.setItem('token', data.token);
       setTimeout(() => navigate("/profile"), 1000);
     } else {
       setMessage(data.message);
     }
   };
-
-    
 
     return (
         <div className="container">

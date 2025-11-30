@@ -1,4 +1,5 @@
 require("dotenv").config();
+const jwt =  require("jsonwebtoken");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const app = express();
@@ -6,7 +7,8 @@ const app = express();
 const usersDB = require("./usersDB");
 const bodyParser = require("body-parser");
 const stripe = require("stripe")(process.env.STRIPE_API_KEY)
-const cors = require ("cors")
+const cors = require ("cors");
+const { verify } = require("./verify");
 
 app.get("/", (req, res) => res.send("Connection successful"));
 
@@ -35,6 +37,11 @@ app.post("/signup", async (req, res) => {
         res.status(500).json({success: false, message: "Registration failed"})
     }
 });
+/* JWT is valid or not
+ Returns actual user as object */
+app.get("/me", verify, (req, res) => {
+  return res.json(req.user)
+});
 
 //LOGIN USER
 app.post("/login", (req, res) => {
@@ -48,7 +55,10 @@ app.post("/login", (req, res) => {
       // Compare passwords
       const match = await bcrypt.compare(password, row.password);
       if (match) {
-        res.json({ success: true, message: "Login successful", user: row.username });
+        const token = jwt.sign({ username }, process.env.JWT_SECRET_KEY, {
+            expiresIn: process.env.JWT_LIFETIME
+        });
+        res.json({ success: true, message: "Login successful", token });
       } else {
         res.status(401).json({ success: false, message: "Invalid password" });
       }
