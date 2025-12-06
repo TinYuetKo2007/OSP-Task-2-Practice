@@ -46,7 +46,7 @@ app.get("/me", verify, (req, res) => {
 //LOGIN USER
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
-    console.log(username, password)
+    //console.log(username, password)
     usersDB.get(`SELECT * FROM users WHERE username = ?`, [username], async (err, row) => {
       if (err) return res.status(500).json({ success: false, message: err.message });
       if (!row)
