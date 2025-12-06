@@ -5,6 +5,7 @@ body {
   justify-content: center;
   margin: 0;
   padding: 75px;
+  background-color: #ffd3a9;
 }
 
 .container {
@@ -94,7 +95,7 @@ h1 {
   position:fixed;
   min-width: 100%;
   display: flex;
-  background-color: #baff60;
+  background-color: #385511;
   justify-content: space-between;
   align-items: center;
   margin: 0 auto;
@@ -105,7 +106,7 @@ h1 {
 .topnav a {
 
   float: left;
-  color: #000000;
+  color: #ffffff;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
@@ -113,8 +114,8 @@ h1 {
 }
 .topnav button {
   float: left;
-  background-color: #baff60;
-  color: #000000;
+  background-color: #385511;
+  color: #ffffff;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;

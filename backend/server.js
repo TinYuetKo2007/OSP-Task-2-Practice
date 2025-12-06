@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(cors({
     origin: "http://localhost:5173",
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }));
 app.use(express.urlencoded({ extended: true }));
 // REGISTER NEW USER
@@ -55,6 +55,7 @@ app.post("/login", (req, res) => {
       // Compare passwords
       const match = await bcrypt.compare(password, row.password);
       if (match) {
+        console.log(process.env.JWT_LIFETIME)
         const token = jwt.sign({ username }, process.env.JWT_SECRET_KEY, {
             expiresIn: process.env.JWT_LIFETIME
         });

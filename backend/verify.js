@@ -1,3 +1,5 @@
+//const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken"
 // Middleware
 export const verify = (req, res, next) => {
     const auth = req.header('Authorization');
@@ -12,6 +14,7 @@ export const verify = (req, res, next) => {
         req.user = verify;
         next()
     } catch (err) {
+        console.log(err)
         return res.status(400).send('Invalid token!!!')
     }
 }

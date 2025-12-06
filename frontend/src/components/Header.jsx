@@ -5,7 +5,9 @@ function Header () {
     const navigate = useNavigate();
     useEffect(() => {setUsername(localStorage.getItem("username"))}, []);
     
-    const handleLogout = () => {localStorage.removeItem("username");
+    const handleLogout = () => {
+        localStorage.removeItem("username");
+        localStorage.removeItem("token");
         navigate("/login");
     }
 
