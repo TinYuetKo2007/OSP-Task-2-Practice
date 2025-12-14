@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import headphones from "../image/headphones.jpg"
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +37,7 @@ function Login() {
             <Header/>
             <div className="form-container">
                     <form className="form" onSubmit={handleLogin}>
-                        <h2>Login</h2>
+                        <h1>Login</h1>
                         <input 
                         required
                         type="text" 

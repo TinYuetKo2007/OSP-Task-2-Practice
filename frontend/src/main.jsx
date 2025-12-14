@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
-
+import RootLayout from './RootLayout.jsx'
 import App from "./App.jsx"
 import Contact from "./Contact.jsx"
 import Login from './components/LogIn.jsx'
@@ -14,15 +14,20 @@ import Products from './Products.jsx'
 
 // Links
 const Router = createBrowserRouter([
-  {path: "/", element: <App/>},
+
   {path: "/contact", element: <Contact/>},
   {path: "/login", element: <Login/>},
   {path: "/signup", element: <SignUp/>},
+    {
+    path: "/",
+    Component: RootLayout,
+    children: [
+  {path: "/", element: <App/>},
   {path: "/profile", element: <Profile/>},
   {path: "/add-song", element: <SongUploader/>},
   {path: "/list", element: <List/>},
   {path: "/aboutus", element: <AboutUs/>},
-  {path: "/products", element: <Products/>},
+  {path: "/products", element: <Products/>},]}
 ])
 
 

@@ -1,7 +1,7 @@
 import headphones from "../image/headphones.jpg"
 import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
-import React, { useState } from "react";
+import { useState } from "react";
 
 function SignUp() {
     const [username, setUsername] = useState("");
@@ -43,7 +43,7 @@ function SignUp() {
             <Header/>
             <div className="form-container">
                     <form className="form" onSubmit={handleRegister}>
-                    <h2>Harmoniq</h2>
+                    <h1>Sign Up</h1>
                     <input 
                     type="text" 
                     placeholder="Username" 

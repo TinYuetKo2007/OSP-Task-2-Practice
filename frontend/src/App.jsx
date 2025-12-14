@@ -11,7 +11,6 @@ function App() {
 
   return (
     <div>
-    <Header/>
     <h1>Harmoniq</h1>
     <nav>
       <List />
