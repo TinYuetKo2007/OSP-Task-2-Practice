@@ -15,7 +15,7 @@ import Products from './Products.jsx'
 // Links
 const Router = createBrowserRouter([
 
-  {path: "/contact", element: <Contact/>},
+
   {path: "/login", element: <Login/>},
   {path: "/signup", element: <SignUp/>},
     {
@@ -26,6 +26,7 @@ const Router = createBrowserRouter([
   {path: "/profile", element: <Profile/>},
   {path: "/add-song", element: <SongUploader/>},
   {path: "/list", element: <List/>},
+  {path: "/contact", element: <Contact/>},
   {path: "/aboutus", element: <AboutUs/>},
   {path: "/products", element: <Products/>},]}
 ])

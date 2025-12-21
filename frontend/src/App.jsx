@@ -11,10 +11,9 @@ function App() {
 
   return (
     <div>
-    <h1>Harmoniq</h1>
+    <h1>RZA</h1>
     <nav>
       <List />
-      <Link to={"/aboutus"}>About Us</Link>
       <Link to={"/products"}>Buy Ticket</Link>
       <AudioPlayer audioSrc={song} />
     </nav>
