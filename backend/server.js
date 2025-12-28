@@ -3,7 +3,7 @@ const jwt =  require("jsonwebtoken");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const app = express();
-
+const calcDB = require("./calcDB")
 const usersDB = require("./usersDB");
 const bodyParser = require("body-parser");
 const stripe = require("stripe")(process.env.STRIPE_API_KEY)
@@ -81,5 +81,74 @@ app.post("/create-checkout-session", async (req, res) => {
   res.status(500).json({ error: err.message });
 }
 })
+
+// Carbon footprint calculator
+const emissionFactors = {
+  petrol: 0.17,
+  diesel: 0.168,
+  electric: 0.053,
+  hybrid: 0.11,
+  bus: 0.103,
+  train: 0.035,
+  tram: 0.045,
+  electricity: 0.193,
+  gas: 0.182,
+};
+
+app.post("/calculate", (req, res) => {
+  const {
+    carType,
+    milesPerWeek,
+    busRides,
+    trainRides,
+    tramRides,
+    electricBill,
+    gasBill,
+  } = req.body;
+
+  console.log("Received calc request:", req.body);
+
+  const miles = parseFloat(milesPerWeek) || 0;
+  const bus = parseFloat(busRides) || 0;
+  const train = parseFloat(trainRides) || 0;
+  const tram = parseFloat(tramRides) || 0;
+  const electric = parseFloat(electricBill) || 0;
+  const gas = parseFloat(gasBill) || 0;
+
+  let transportFootprint = 0;
+  let energyFootprint = 0;
+
+  if (carType && emissionFactors[carType]) {
+    transportFootprint += miles * emissionFactors[carType];
+  }
+
+  transportFootprint += bus * 1.60934 * emissionFactors.bus;
+  transportFootprint += train * 1.60934 * emissionFactors.train;
+  transportFootprint += tram * 1.60934 * emissionFactors.tram;
+
+  energyFootprint += electric * emissionFactors.electricity;
+  energyFootprint += gas * emissionFactors.gas;
+
+  const totalFootprint = transportFootprint + energyFootprint;
+
+  calcDB.run(
+    `INSERT INTO calculations 
+    (carType, milesPerWeek, busRides, trainRides, tramRides, electricBill, gasBill, totalFootprint)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [carType, miles, bus, train, tram, electric, gas, totalFootprint],
+    function (err) {
+      if (err) {
+        console.error("Insert error:", err.message);
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({
+        id: this.lastID,
+        totalFootprint,
+        transportFootprint,
+        energyFootprint,
+      });
+    }
+  );
+});
 
 app.listen(4000, () => console.log("Server running on http://localhost:4000"));

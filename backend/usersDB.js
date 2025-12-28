@@ -12,5 +12,4 @@ usersDB.serialize(() => {
   `);
 });
 
-
 module.exports = usersDB;
