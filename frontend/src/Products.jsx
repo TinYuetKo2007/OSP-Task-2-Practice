@@ -2,14 +2,18 @@ import { useState, useEffect } from "react";
 import Header from "./components/Header.jsx"
 import ProductDisplay from "./components/ProductDisplay.jsx";
 import { Link } from "react-router-dom"
-const products = [
+export const products = [
     {
         name: "Zoo Ticket",
         priceId: "price_1SW0yGCZTWpALhZBIDwcknTN",
+        desc: "A zoo ticket for adults (18 or older)",
+        productId: "zoo",
     },
     {
         name: "Hotel Booking 1 Night",
         priceId: "price_1SW0z7CZTWpALhZBkD8FKV5z",
+        desc: "",
+        productId: "hotel",
     },
 ];
 
@@ -39,17 +43,18 @@ export default function Products() {
 
   return message ? (
     <>
-    <Header/>
     <Message message={message} />
     <Link onClick={() => window.location.href="/products"}>s</Link>
     </>
     
   ) : (
-    <>
-    <Header/>
-            {products.map((product) => (
-                    <ProductDisplay key={product.name} name={product.name} priceId={product.priceId} />
-            ))}
-        </>
+    <div className="product-list"><h1>Products</h1>
+        <ul>{products.map((product) => (
+                // <ProductDisplay key={product.name} product={product}/>
+                <li>
+                  <Link to={`/products/${product.productId}`}>{product.name}</Link>
+                </li>
+        ))}</ul>
+    </div>
   );
 }

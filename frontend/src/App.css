@@ -210,3 +210,11 @@ input[type="range"] {
   align-items: center;
   justify-content: center;
 }
+
+.product-list {
+  border-radius: 10px;
+  font-size: large;
+  border-color: #385511;
+  border: 2px solid #385511;
+  padding: 40px;
+}

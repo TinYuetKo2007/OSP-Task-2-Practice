@@ -11,6 +11,7 @@ import SongUploader from "./components/SongUploader.jsx"
 import List from './List.jsx'
 import AboutUs from './components/AboutUs.jsx'
 import Products from './Products.jsx'
+import ProductPage from './components/ProductPage.jsx'
 
 // Links
 const Router = createBrowserRouter([
@@ -28,7 +29,12 @@ const Router = createBrowserRouter([
   {path: "/list", element: <List/>},
   {path: "/contact", element: <Contact/>},
   {path: "/aboutus", element: <AboutUs/>},
-  {path: "/products", element: <Products/>},]}
+  {path: "/products",
+  children: [
+    {index: true, element: <Products/>},
+    {path: ":productId", element: <ProductPage/>},
+  ]
+}]}
 ])
 
 
