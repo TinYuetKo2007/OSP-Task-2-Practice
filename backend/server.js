@@ -3,8 +3,7 @@ const jwt =  require("jsonwebtoken");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const app = express();
-const calcDB = require("./calcDB")
-const usersDB = require("./usersDB");
+const { appDB, fetchAll } = require("./db")
 const bodyParser = require("body-parser");
 const stripe = require("stripe")(process.env.STRIPE_API_KEY)
 const cors = require ("cors");
@@ -28,7 +27,7 @@ app.post("/signup", async (req, res) => {
     const {username, password} = req.body;
     try {
         const hash = await bcrypt.hash(password, 10)
-        usersDB.run(`INSERT INTO users (username, password) VALUES (?,?)`, [username, hash], function (err) {
+        appDB.run(`INSERT INTO users (username, password) VALUES (?,?)`, [username, hash], function (err) {
             if (err)
                 return res.status(400).json({success: false, message: err.message})
             res.json({success: true})
@@ -47,7 +46,7 @@ app.get("/me", verify, (req, res) => {
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
     //console.log(username, password)
-    usersDB.get(`SELECT * FROM users WHERE username = ?`, [username], async (err, row) => {
+    appDB.get(`SELECT * FROM users WHERE username = ?`, [username], async (err, row) => {
       if (err) return res.status(500).json({ success: false, message: err.message });
       if (!row)
         return res.status(401).json({ success: false, message: "User not found" });
@@ -56,7 +55,7 @@ app.post("/login", (req, res) => {
       const match = await bcrypt.compare(password, row.password);
       if (match) {
         console.log(process.env.JWT_LIFETIME)
-        const token = jwt.sign({ username }, process.env.JWT_SECRET_KEY, {
+        const token = jwt.sign({ username, id: row.id }, process.env.JWT_SECRET_KEY, {
             expiresIn: process.env.JWT_LIFETIME
         });
         res.json({ success: true, message: "Login successful", token });
@@ -131,7 +130,7 @@ app.post("/calculate", (req, res) => {
 
   const totalFootprint = transportFootprint + energyFootprint;
 
-  calcDB.run(
+  appDB.run(
     `INSERT INTO calculations 
     (carType, milesPerWeek, busRides, trainRides, tramRides, electricBill, gasBill, totalFootprint)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -149,6 +148,12 @@ app.post("/calculate", (req, res) => {
       });
     }
   );
+});
+
+app.get("/notes", verify, async (req, res) => {
+  const userid = req.user.id;
+  const notes = await fetchAll(appDB, `SELECT * FROM notes WHERE user_id = ?`, [userid])
+  return res.json({notes}) // Returns notes to user
 });
 
 app.listen(4000, () => console.log("Server running on http://localhost:4000"));

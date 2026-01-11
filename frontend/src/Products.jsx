@@ -12,7 +12,7 @@ export const products = [
     {
         name: "Hotel Booking 1 Night",
         priceId: "price_1SW0z7CZTWpALhZBkD8FKV5z",
-        desc: "",
+        desc: "Book for a 1-night stay at our onsite hotel",
         productId: "hotel",
     },
 ];
