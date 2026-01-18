@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import CreateNotes from "./CreateNotes";
 export default function Notes() {
   const [loading, setLoading] = useState(false);
   const [notes, setNotes] = useState(null);
@@ -40,6 +40,7 @@ export default function Notes() {
       <div style={{ backgroundColor: "#FFE2B6" }}>
         <h1>Notes</h1>
       </div>
+      <CreateNotes onSuccess={fetchNotes}/>
       {notes.map((note, index) => (
         <div key={note.id}>
           <h2>{note.title}</h2> <h3>{note.text}</h3>

@@ -13,6 +13,7 @@ app.get("/", (req, res) => res.send("Connection successful"));
 
 // Middleware looks at code before request is sent to server
 app.use(bodyParser.json());
+app.use(express.json());
 // converts body into object
 
 app.use(cors({
@@ -36,6 +37,7 @@ app.post("/signup", async (req, res) => {
         res.status(500).json({success: false, message: "Registration failed"})
     }
 });
+
 /* JWT is valid or not
  Returns actual user as object */
 app.get("/me", verify, (req, res) => {
@@ -157,11 +159,12 @@ app.get("/notes", verify, async (req, res) => {
 });
 
 app.post("/notes", verify, async (req, res) => {
+    const { title, text } = req.body;
     const userid = req.user.id;
     const sql = `INSERT INTO notes(user_id, title, text) VALUES(?, ?, ?)`;
   try {
     const note = await execute(appDB, sql, [userid, req.body.title, req.body.text]);
-    res.json(note)
+    res.json({note, success: true})
   } catch (err) {
     console.log(err);
     res.status(500).json({success: false, message: "Error creating notes"})
