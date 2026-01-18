@@ -1,6 +1,5 @@
 import giraffe from "../image/giraffe.jpg"
 import { Link, useNavigate } from "react-router-dom";
-import Header from "./Header";
 import { useState } from "react";
 
 function SignUp() {
@@ -42,7 +41,7 @@ function SignUp() {
         <div className="container">
             <div className="form-container">
                     <form className="form" onSubmit={handleRegister}>
-                    <button onClick={navigate("/")}>Go Back</button>
+                    <button onClick={() => navigate("/")}>Go Back</button>
                     <h1>Sign Up</h1>
                     <input 
                     type="text" 

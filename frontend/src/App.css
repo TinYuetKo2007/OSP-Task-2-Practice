@@ -97,6 +97,11 @@ body {
   text-align: center;
 }
 
+.form textarea {
+  width: 300px;
+  height: 100px;
+  resize: none;
+}
 h1 {
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
