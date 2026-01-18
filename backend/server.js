@@ -3,7 +3,7 @@ const jwt =  require("jsonwebtoken");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const app = express();
-const { appDB, fetchAll } = require("./db")
+const { appDB, fetchAll, execute } = require("./db")
 const bodyParser = require("body-parser");
 const stripe = require("stripe")(process.env.STRIPE_API_KEY)
 const cors = require ("cors");
@@ -154,6 +154,18 @@ app.get("/notes", verify, async (req, res) => {
   const userid = req.user.id;
   const notes = await fetchAll(appDB, `SELECT * FROM notes WHERE user_id = ?`, [userid])
   return res.json({notes}) // Returns notes to user
+});
+
+app.post("/notes", verify, async (req, res) => {
+    const userid = req.user.id;
+    const sql = `INSERT INTO notes(user_id, title, text) VALUES(?, ?, ?)`;
+  try {
+    const note = await execute(appDB, sql, [userid, req.body.title, req.body.text]);
+    res.json(note)
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({success: false, message: "Error creating notes"})
+  } 
 });
 
 app.listen(4000, () => console.log("Server running on http://localhost:4000"));
