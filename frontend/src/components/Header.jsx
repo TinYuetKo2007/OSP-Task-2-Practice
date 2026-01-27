@@ -21,7 +21,10 @@ function Header () {
                 <Link to={"/contact"}>Contact</Link>
                 
                 </div>
-                 {username ? <button onClick={handleLogout}> Log Out </button> : <div>
+                 {username ? <div>
+                 <Link to={"/notes"}>Notes</Link>
+                 <button onClick={handleLogout}> Log Out </button>
+                 </div> : <div>
                     <Link to={"/signup"}>Sign Up</Link>
                     <Link to={"/login"}>Log In</Link>
                 </div>}

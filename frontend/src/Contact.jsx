@@ -3,7 +3,6 @@ import Header from "./components/Header.jsx"
 function Dashboard(){
     return (
         <div>
-            <Header/>
         <div className="form-container">
             <div className="form">
                 <h3>You can contact us here. Feel free to drop a message.</h3>

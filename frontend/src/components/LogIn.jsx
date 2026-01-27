@@ -1,5 +1,5 @@
 import { useState } from "react";
-import headphones from "../image/headphones.jpg"
+import giraffe from "../image/giraffe.jpg"
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
@@ -34,9 +34,9 @@ function Login() {
 
     return (
         <div className="container">
-            <Header/>
             <div className="form-container">
                     <form className="form" onSubmit={handleLogin}>
+                        <button onClick= {() => navigate("/")}>Go Back</button>
                         <h1>Login</h1>
                         <input 
                         required
@@ -57,7 +57,7 @@ function Login() {
                     </form>
                     <p>{message}</p>
                  </div>
-            <img src={headphones} />
+            <img src={giraffe} />
         </div>
     )
 }
