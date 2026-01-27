@@ -18,6 +18,11 @@ body {
   margin: auto;
   overflow: hidden;
 }
+@media screen and (max-width: 800px) {
+  .container {
+    width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+  }
+}
 
 /*Form CSS */
 .form-container {
