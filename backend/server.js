@@ -163,7 +163,7 @@ app.post("/notes", verify, async (req, res) => {
     const userid = req.user.id;
     const sql = `INSERT INTO notes(user_id, title, text) VALUES(?, ?, ?)`;
   try {
-    const note = await execute(appDB, sql, [userid, req.body.title, req.body.text]);
+    const note = await execute(appDB, sql, [userid, title, text]);
     res.json({note, success: true})
   } catch (err) {
     console.log(err);
