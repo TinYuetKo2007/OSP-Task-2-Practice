@@ -13,6 +13,7 @@ import AboutUs from './components/AboutUs.jsx'
 import Products from './Products.jsx'
 import ProductPage from './components/ProductPage.jsx'
 import Notes from './components/Notes.jsx'
+import AdminPage from './components/admin/AdminPage.jsx'
 
 // Links
 const Router = createBrowserRouter([
@@ -28,6 +29,7 @@ const Router = createBrowserRouter([
   {path: "/list", element: <List/>},
   {path: "/contact", element: <Contact/>},
   {path: "/aboutus", element: <AboutUs/>},
+  {path: "/admin", element: <AdminPage/>},
   {path: "/notes", element: <Notes/>},
   {path: "/products",
   children: [

@@ -28,7 +28,7 @@ app.post("/signup", async (req, res) => {
     const {username, password} = req.body;
     try {
         const hash = await bcrypt.hash(password, 10)
-        appDB.run(`INSERT INTO users (username, password) VALUES (?,?)`, [username, hash], function (err) {
+        appDB.run(`INSERT INTO users (username, password, role) VALUES (?,?,?)`, [username, hash, "USER"], function (err) {
             if (err)
                 return res.status(400).json({success: false, message: err.message})
             res.json({success: true})
@@ -37,7 +37,7 @@ app.post("/signup", async (req, res) => {
         res.status(500).json({success: false, message: "Registration failed"})
     }
 });
-
+app.use(verify);
 /* JWT is valid or not
  Returns actual user as object */
 app.get("/me", verify, (req, res) => {
@@ -57,7 +57,8 @@ app.post("/login", (req, res) => {
       const match = await bcrypt.compare(password, row.password);
       if (match) {
         console.log(process.env.JWT_LIFETIME)
-        const token = jwt.sign({ username, id: row.id }, process.env.JWT_SECRET_KEY, {
+        // Pass in user data + create token
+        const token = jwt.sign({ username, id: row.id, role: row.role }, process.env.JWT_SECRET_KEY, {
             expiresIn: process.env.JWT_LIFETIME
         });
         res.json({ success: true, message: "Login successful", token });
@@ -170,5 +171,14 @@ app.post("/notes", verify, async (req, res) => {
     res.status(500).json({success: false, message: "Error creating notes"})
   } 
 });
+// only work for admins
+app.get("/users", async (req, res) => {
+    const userid = req.user.id;
+    if (req.user.role !== "ADMIN") {
+      return res.json({success: false})
+    }
+  const users = await fetchAll(appDB, `SELECT username, role FROM users`)
+  return res.json({users}) // Returns notes to user
+})
 
 app.listen(4000, () => console.log("Server running on http://localhost:4000"));

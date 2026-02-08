@@ -35,6 +35,9 @@ function Header () {
             </div>
                 {username ? <div>
                 <Link to={"/notes"}>Notes</Link>
+                <button onClick={toggleTheme} className="theme-toggle">
+        {isDarkMode ? "Light Mode" : "Dark Mode"}
+                </button>
                 <button onClick={handleLogout}> Log Out </button>
                 </div> : <div>
                 <Link to={"/signup"}>Sign Up</Link>
