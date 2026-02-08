@@ -37,15 +37,20 @@ export default function Notes() {
   }
   return (
     <>
-      <div style={{ backgroundColor: "#FFE2B6" }}>
-        <h1>Notes</h1>
+    <h1>Notes</h1>
+    <div className="container">
+
+      <div style={{width: "50%", margin: "100px"}}>
+        <CreateNotes onSuccess={fetchNotes}/>
       </div>
-      <CreateNotes onSuccess={fetchNotes}/>
-      {notes.map((note, index) => (
+      
+      <div className="notes-display">
+      {notes.map((note) => (
         <div key={note.id}>
           <h2>{note.title}</h2> <h3>{note.text}</h3>
         </div>
       ))}
-    </>
+      </div>
+    </div></>
   );
 }

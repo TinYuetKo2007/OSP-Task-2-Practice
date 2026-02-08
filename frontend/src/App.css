@@ -253,13 +253,16 @@ body.dark-mode {
 }
 
 .dark-mode .form-container .form button {
-  background-color: #ffd3a9;
+  background-color: rgb(255, 226, 182);
   color: #000000;
 }
 .dark-mode .material-symbols-rounded {
   color:#000000
 }
 
+.dark-mode .notes-display {
+  background-color: #522903;
+}
 table {
   width: 100%;
   border:#522903;
@@ -267,4 +270,13 @@ table {
   border: 2px solid #385511;
   padding: 30px;
   text-align: center;
+}
+
+.notes-display {
+  flex-direction: column;
+  background-color: rgb(255, 226, 182);
+}
+
+.notes-display h2 {
+  font-size: 20px;
 }

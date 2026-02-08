@@ -37,12 +37,7 @@ app.post("/signup", async (req, res) => {
         res.status(500).json({success: false, message: "Registration failed"})
     }
 });
-app.use(verify);
-/* JWT is valid or not
- Returns actual user as object */
-app.get("/me", verify, (req, res) => {
-  return res.json(req.user)
-});
+
 
 //LOGIN USER
 app.post("/login", (req, res) => {
@@ -67,6 +62,13 @@ app.post("/login", (req, res) => {
       }
     });
   });
+  
+app.use(verify);
+/* JWT is valid or not
+ Returns actual user as object */
+app.get("/me", verify, (req, res) => {
+  return res.json(req.user)
+});
 
 app.post("/create-checkout-session", async (req, res) => {
   try {

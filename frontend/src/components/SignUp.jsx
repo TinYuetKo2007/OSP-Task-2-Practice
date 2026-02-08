@@ -32,7 +32,7 @@ function SignUp() {
             } else {
                 setMessage(data.message || "Registration failed.");
             }
-        } catch (err) {
+        } catch {
             setMessage("Server error. Please try again later.");
         }
     };

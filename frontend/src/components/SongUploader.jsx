@@ -10,7 +10,7 @@ function SongUploader({ addSong }) {
   const [genre, setGenre] = useState("");
   const [error, setError] = useState("");
   const [year, setYear] = useState("");
-  const [songs, setSongs] = useState([]);
+  const [_, setSongs] = useState([]);
   
   const isLoggedIn = !!localStorage.getItem("token");
 

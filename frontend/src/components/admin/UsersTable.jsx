@@ -13,7 +13,7 @@ export default function UsersTable() {
         const data = await res.json()
         setUsers(data.users)
         setLoading(false)
-        } catch(err) {
+        } catch {
             setErr("Error fetching username")
             setLoading(false)}
         

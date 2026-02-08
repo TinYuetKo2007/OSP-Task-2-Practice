@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import UsersTable from "./UsersTable";
 
 export default function AdminPage() {
@@ -7,7 +7,7 @@ export default function AdminPage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     if (!localStorage.getItem("token")) {
       return navigate("/login");
     }
@@ -24,15 +24,15 @@ export default function AdminPage() {
       console.log(user.role);
       setUser(user);
       setLoading(false);
-    } catch (err) {
+    } catch {
       setErr("Error fetching username");
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [fetchUser]);
   if (loading) {
     return (
       <div>
