@@ -38,7 +38,7 @@ function SignUp() {
     };
 
     return (
-        <div className="container">
+        <div className="container" style={{ height: "95vh"}}>
             <div className="form-container">
                     <form className="form" onSubmit={handleRegister}>
                     <button onClick={() => navigate("/")}>Go Back</button>

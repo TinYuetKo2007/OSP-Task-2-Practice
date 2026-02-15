@@ -54,7 +54,6 @@ function SongUploader({ addSong }) {
 
   return (
     <div>
-      <Header />
       <div className="form-container">
         <h1>Upload Song</h1>
 

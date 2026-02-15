@@ -15,10 +15,13 @@ function App() {
     <h1>RZA</h1>
     <nav className='form'>
       <List />
-      <Link to={"/products"}>Buy Ticket</Link>
       <AudioPlayer audioSrc={song} />
     </nav>
-    <p>"RZA has brought us many great memories I will always cherish!"</p>
+    <div className='second-section'>
+    <h2>What customers have said</h2>
+    <p>"RZA has brought our family many great memories I will always cherish!"</p>
+    <p>"They have helped us with so much. I cannot be any more grateful."</p>
+    </div>
     </div>
   )
 };

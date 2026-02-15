@@ -1,7 +1,7 @@
 import Header from "./Header";
 import { useEffect, useState } from "react";
 import List from "../List.jsx"
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 export default function Profile () {
     const navigate = useNavigate();
@@ -39,7 +39,6 @@ export default function Profile () {
 
     return (
         <div>
-            <Header/>
             <h1>Welcome, {username}!</h1>
             <List/>
         </div>

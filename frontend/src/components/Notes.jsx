@@ -36,11 +36,11 @@ export default function Notes() {
     );
   }
   return (
-    <>
+    <div style={{display: "flex", flexDirection: "column", maxWidth: "100%"}}>
     <h1>Notes</h1>
     <div className="container">
 
-      <div style={{width: "50%", margin: "100px"}}>
+      <div>
         <CreateNotes onSuccess={fetchNotes}/>
       </div>
       
@@ -51,6 +51,7 @@ export default function Notes() {
         </div>
       ))}
       </div>
-    </div></>
+    </div>
+    </div>
   );
 }
