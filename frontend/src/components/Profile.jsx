@@ -1,6 +1,5 @@
 import Header from "./Header";
 import { useEffect, useState } from "react";
-import List from "../List.jsx"
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 export default function Profile () {
@@ -40,7 +39,6 @@ export default function Profile () {
     return (
         <div>
             <h1>Welcome, {username}!</h1>
-            <List/>
         </div>
     )
 }

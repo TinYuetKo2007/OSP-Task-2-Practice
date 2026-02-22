@@ -173,6 +173,28 @@ app.post("/notes", verify, async (req, res) => {
     res.status(500).json({success: false, message: "Error creating notes"})
   } 
 });
+
+
+app.get("/songs", verify, async (req, res) => {
+  const userid = req.user.id;
+  const songs = await fetchAll(appDB, `SELECT * FROM songs JOIN artists ON songs.artist_id = artists.id`)
+  console.log(songs)
+  return res.json({songs}) // Returns notes to user
+});
+
+app.post("/songs", verify, async (req, res) => {
+    const { title, text } = req.body;
+    const userid = req.user.id;
+    const sql = `INSERT INTO songs(user_id, title, text) VALUES(?, ?, ?)`;
+  try {
+    const song = await execute(appDB, sql, [userid, title, text]);
+    res.json({song, success: true})
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({success: false, message: "Error creating notes"})
+  } 
+});
+
 // only work for admins
 app.get("/users", async (req, res) => {
     const userid = req.user.id;
