@@ -42,7 +42,8 @@ export default function Songs() {
                 {songs.map((song, index) => (<div key={song.id}>
                   <img src={song.cover_image}/>
                   <div>{index +1}:
-            <h2>{song.title}</h2>
+            <a href={`/songs/${song.id}`}>
+            <h2>{song.title}</h2></a>
             <h3>{song.artist_name}</h3>
             </div>
         </div>))}

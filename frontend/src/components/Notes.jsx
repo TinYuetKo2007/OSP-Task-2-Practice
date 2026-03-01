@@ -36,7 +36,10 @@ export default function Notes() {
     );
   }
   return (
-    <div style={{display: "flex", flexDirection: "column", maxWidth: "100%"}}>
+    <div style={{display: "flex", 
+    flexDirection: "column", 
+    maxWidth: "100%",
+    alignItems: "start"}}>
     <h1>Notes</h1>
     <div className="container">
 

@@ -13,6 +13,7 @@ import Products from './Products.jsx'
 import ProductPage from './components/ProductPage.jsx'
 import Notes from './components/Notes.jsx'
 import AdminPage from './components/admin/AdminPage.jsx'
+import SongPage from './components/SongPage.jsx'
 import Songs from './components/Songs.jsx'
 
 // Links
@@ -30,7 +31,11 @@ const Router = createBrowserRouter([
   {path: "/aboutus", element: <AboutUs/>},
   {path: "/admin", element: <AdminPage/>},
   {path: "/notes", element: <Notes/>},
-  {path: "/songs", element: <Songs/>},
+  {path: "/songs", 
+    children: [
+    {index: true, element: <Songs/>},
+    {path: ":songId", element: <SongPage/>},
+  ]},
   {path: "/products",
   children: [
     {index: true, element: <Products/>},

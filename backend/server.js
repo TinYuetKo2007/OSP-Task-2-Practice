@@ -177,9 +177,15 @@ app.post("/notes", verify, async (req, res) => {
 
 app.get("/songs", verify, async (req, res) => {
   const userid = req.user.id;
-  const songs = await fetchAll(appDB, `SELECT * FROM songs JOIN artists ON songs.artist_id = artists.id`)
+  const songs = await fetchAll(appDB, `SELECT songs.*, artist_name FROM songs JOIN artists ON songs.artist_id = artists.id`)
   console.log(songs)
   return res.json({songs}) // Returns notes to user
+});
+app.get("/songs/:songId", verify, async (req, res) => {
+  const songId = req.params.songId
+  const songs = await fetchAll(appDB, `SELECT * FROM songs WHERE id = ?`, [songId])
+  console.log(songs)
+  return res.json(songs[0]) // Returns notes to user
 });
 
 app.post("/songs", verify, async (req, res) => {
