@@ -303,3 +303,24 @@ footer div {
 .dark-mode footer {
   background-color: #522903;
 }
+
+.songs-table > div:nth-of-type(odd) {
+  background-color: rgb(255, 226, 182);
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+}
+.songs-table > div:nth-of-type(even) {
+  background-color: #c4ffa1;
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+.dark-mode .songs-table > div:nth-of-type(odd) {
+  background-color: #522903;
+
+}
+.dark-mode .songs-table > div:nth-of-type(even) {
+  background-color: #385511;
+}

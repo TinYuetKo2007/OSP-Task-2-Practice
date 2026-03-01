@@ -37,12 +37,16 @@ export default function Songs() {
       }
     return (
         <div>
-            <ul>
-                {songs.map((song, index) => (<li key={song.id}>{index +1}:
-            {song.title} by {song.artist_name}<br/>
-            <img src={song.cover_image}/>
-        </li>))}
-        </ul>
+          <h1>Songs</h1>
+            <div className="songs-table">
+                {songs.map((song, index) => (<div key={song.id}>
+                  <img src={song.cover_image}/>
+                  <div>{index +1}:
+            <h2>{song.title}</h2>
+            <h3>{song.artist_name}</h3>
+            </div>
+        </div>))}
+        </div>
         </div>
     )
 }

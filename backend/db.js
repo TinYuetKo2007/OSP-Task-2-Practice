@@ -53,6 +53,7 @@ appDB.serialize(() => {
         artist_id INTEGER,
         genre TEXT,
         year INTEGER,
+        cover_image TEXT,
         FOREIGN KEY (artist_id) REFERENCES artists(id)
       )
   `);
