@@ -148,7 +148,15 @@ h1 {
   background-color: #dfffc1;
   color: white;
 }
-
+@media screen and (max-width: 800px) {
+  .topnav {
+    flex-direction: column;
+  }
+  .topnav a, .topnav button {
+    font-size: 15px;
+    padding: 5px 5px;
+  }
+}
 .container img {
   width: 50%;
   object-fit: cover;
