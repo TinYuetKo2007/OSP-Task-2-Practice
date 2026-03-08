@@ -1,13 +1,11 @@
-html { 
-  scrollbar-gutter: stable; 
-}
 body {
   font-family: Arial, sans-serif;
   justify-content: space-between;
   justify-content: center;
   margin: 0;
   background-color: #ffd3a9;
-  width: 100vw
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .container {
@@ -108,7 +106,7 @@ h1 {
 }
 /*Top navigation bar*/
 .topnav {
-  max-width: 100%;
+  width: 100%;
   display: flex;
   background-color: #385511;
   justify-content: space-between;
@@ -119,7 +117,6 @@ h1 {
 }
 
 .topnav a {
-
   float: left;
   color: #ffffff;
   text-align: center;
@@ -127,6 +124,7 @@ h1 {
   text-decoration: none;
   font-size: 17px;
 }
+
 .topnav button {
   float: left;
   background-color: #385511;
@@ -335,3 +333,22 @@ footer div {
 .dark-mode .songs-table > div:nth-of-type(even) {
   background-color: #385511;
 }
+.bottom-left {
+   position: absolute; 
+   bottom: 10px; 
+   left: 15px; 
+}
+.parent-container {
+   position: relative; 
+   text-align: left; 
+   color: white; 
+}
+.main-title {
+  font-size: 40px;
+}
+@media screen and (max-width: 900px) {
+  .main-title {
+    font-size: 20px
+}
+}
+  

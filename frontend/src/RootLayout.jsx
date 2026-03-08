@@ -11,9 +11,7 @@ export default function RootLayout() {
         width: "100%"
       }}
     >
-      <div>
-        <Header />
-      </div>
+    <Header />
 
       <div style={{ display: "flex", flex: 1 }}>
         <div
@@ -23,14 +21,13 @@ export default function RootLayout() {
             maxWidth: "66vw",
             marginRight: "auto",
             marginLeft: "auto",
+            marginBottom: "10"
           }}
         >
           <Outlet />
         </div>
       </div>
-      <div style={{marginTop: 10}}>
         <Footer />
-      </div>
       
     </div>
   );
