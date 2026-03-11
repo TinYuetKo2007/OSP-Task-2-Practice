@@ -3,7 +3,7 @@ body {
   justify-content: space-between;
   justify-content: center;
   margin: 0;
-  background-color: #ffd3a9;
+  background-color: #d4ffc7;
   width: 100%;
   overflow-x: hidden;
 }
@@ -20,34 +20,13 @@ body {
 
 /*Form CSS */
 .form-container {
-  background-color: rgb(255, 226, 182);
+  background-color: #c7f3ff;
   padding: 100px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 50%;
   height: 100%;
   align-items: left;
   justify-content: center;
-}
-
-.form-toggle {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.form-toggle button {
-  width: 50%;
-  padding: 10px;
-  background-color: #f3f3f3;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  border-radius: 10px 10px 0 0;
-}
-
-.form-toggle .active {
-  background-color: #522903;
-  color: white;
 }
 
 .form {
@@ -76,7 +55,7 @@ body {
 
 .form button {
   padding: 10px;
-  background-color:#522903;
+  background-color:#385511;
   color: white;
   border: none;
   font-size: large;
@@ -145,6 +124,9 @@ h1 {
 .topnav a.active {
   background-color: #dfffc1;
   color: white;
+}
+.topnav h1{
+  color: #ffffff;
 }
 @media screen and (max-width: 800px) {
   .topnav {
@@ -238,28 +220,31 @@ body.dark-mode {
   color: #ffffff;
 }
 .topnav.dark-mode {
-  background-color: #79fd2c;
+  background-color: #d4ffc7;
 }
 .topnav.dark-mode a {
   color: #000000
 }
 .topnav.dark-mode button {
-  background-color: #79fd2c;
+  background-color: #d4ffc7;
+  color: #000000;
+}
+.topnav.dark-mode h1 {
   color: #000000;
 }
 .dark-mode .player-card {
-  background-color: #23334d;
+  background-color: #00245e;
 }
 
 .dark-mode .track-duration p {
   color: #ffffff;
 }
 .dark-mode .form-container {
-  background-color: #522903;
+  background-color: #00245e;
 }
 
 .dark-mode .form-container .form button {
-  background-color: rgb(255, 226, 182);
+  background-color: #c7f3ff;
   color: #000000;
 }
 .dark-mode .material-symbols-rounded {
@@ -281,7 +266,7 @@ table {
 .notes-display {
   display: flex;
   flex-direction: column;
-  background-color: rgb(255, 226, 182);
+  background-color: #c7f3ff;
   padding: 10px;
 }
 

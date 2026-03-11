@@ -27,8 +27,8 @@ function Header () {
     return (
         <nav className={`topnav ${isDarkMode ? "dark-mode" : ""}`}>
             <div>
+            <h1>Greenfield Local Hub</h1>
             <Link to={"/"}>Main Page</Link>
-            <Link to={"/add-song"}>Upload Page</Link>
             <Link to="/products">Tickets/Booking</Link>
             <Link to={"/contact"}>Contact</Link>
             
