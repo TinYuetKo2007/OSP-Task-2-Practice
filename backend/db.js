@@ -19,22 +19,14 @@ export const execute = async (db, sql, params = []) => {
 };
 
 appDB.serialize(() => {
-    appDB.run(`
-        CREATE TABLE IF NOT EXISTS events (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        artist_id INTEGER,
-        content TEXT,
-        event_date TEXT,
-        year INTEGER,
-        FOREIGN KEY (artist_id) REFERENCES artists(id)
-      )
-  `);
     // Users
     appDB.run(`
         CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE,
+        forename TEXT,
+        surname TEXT,
+        email TEXT UNIQUE,
         password TEXT,
         role TEXT
         )
@@ -55,14 +47,34 @@ appDB.serialize(() => {
         productId TEXT UNIQUE
       )
     `);
+      appDB.run(`
+      CREATE TABLE IF NOT EXISTS orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId INTEGER,
+        type TEXT,
+        priceId TEXT NOT NULL,
+        productId TEXT UNIQUE,
+        FOREIGN KEY (userId) REFERENCES users(id),
+        FOREIGN KEY (productId) REFERENCES products(productId)
+      )
+    `);
+          appDB.run(`
+      CREATE TABLE IF NOT EXISTS orderProduct (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        orderId INTEGER,
+        productId TEXT UNIQUE,
+        FOREIGN KEY (orderId) REFERENCES orders(id),
+        FOREIGN KEY (productId) REFERENCES products(productId)
+      )
+    `);
     appDB.run(`
         CREATE TABLE IF NOT EXISTS notes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
+        userId INTEGER,
         title TEXT NOT NULL,
         text TEXT NOT NULL,
         date DATETIME,
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (userId) REFERENCES users(id)
         )`)
 
     appDB.run(`CREATE TABLE IF NOT EXISTS calculations (

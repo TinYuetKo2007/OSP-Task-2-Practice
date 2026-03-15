@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
 export default function Profile () {
     const navigate = useNavigate();
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [forename, setForename] = useState("");
+
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState(null)
     const fetchUser = useCallback(async () => {
@@ -14,11 +16,12 @@ export default function Profile () {
         // Allows server to identify user
         try {
             setLoading(true)
-        const res = await fetch("http://localhost:4000/me", {method: "GET", headers: {
+        const res = await fetch("http://localhost:4000/me/profile", {method: "GET", headers: {
             "Authorization": "Bearer " + localStorage.getItem("token")
         }});
         const data = await res.json()
-        setUsername(data.username)
+        setEmail(data.email)
+        setForename(data.forename)
         setLoading(false)
         } catch {
             setErr("Error fetching username")
@@ -38,7 +41,9 @@ export default function Profile () {
 
     return (
         <div>
-            <h1>Welcome, {username}!</h1>
+            <h1>Welcome, {forename}!</h1>
+            <h2>{email}</h2>
+            <h2>Recent purchases:</h2>
         </div>
     )
 }

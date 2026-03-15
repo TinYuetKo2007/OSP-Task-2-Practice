@@ -231,6 +231,14 @@ app.use(verify);
 app.get("/me", verify, (req, res) => {
   return res.json(req.user)
 });
+app.get("/me/profile", verify, async (req, res) => {
+  const users = await fetchAll(appDB, `SELECT * FROM users WHERE username = ?`, [req.user.username]);
+  return res.json(users[0]);
+});
+app.get("/me/orders", verify, async (req, res) => {
+  const orders = await fetchAll(appDB, `SELECT * FROM orders WHERE user_id = ?`, [req.user.id]);
+  return res.json({orders});
+});
 
 // only work for admins
 app.get("/users", async (req, res) => {
