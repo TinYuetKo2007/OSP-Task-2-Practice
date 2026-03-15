@@ -1,5 +1,7 @@
 import { Link, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react";
+import { searchPages } from "../main.jsx";
+import SearchBar from "./SearchBar.jsx";
 function Header () {
     const [username, setUsername] = useState("");
     const navigate = useNavigate();
@@ -27,11 +29,15 @@ function Header () {
     return (
         <nav className={`topnav ${isDarkMode ? "dark-mode" : ""}`}>
             <div>
-            <h1>Greenfield Local Hub</h1>
+            <h1>GLH</h1>
             <Link to={"/"}>Main Page</Link>
-            <Link to="/products">Tickets/Booking</Link>
+            <Link to={"/products"}>Market</Link>
             <Link to={"/contact"}>Contact</Link>
-            
+            <SearchBar
+        data={searchPages}
+        searchKey="name"
+        placeholder="Search pages..."
+      />
             </div>
                 {username ? <div>
                 <Link to={"/notes"}>Notes</Link>

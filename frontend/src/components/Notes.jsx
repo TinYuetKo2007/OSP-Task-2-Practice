@@ -41,7 +41,7 @@ export default function Notes() {
     maxWidth: "100%",
     alignItems: "start"}}>
     <h1>Notes</h1>
-    <div className="container">
+    <div className="flex-container">
 
       <div>
         <CreateNotes onSuccess={fetchNotes}/>

@@ -25,7 +25,7 @@ appDB.serialize(() => {
         title TEXT NOT NULL,
         artist_id INTEGER,
         content TEXT,
-        event_date TEXT
+        event_date TEXT,
         year INTEGER,
         FOREIGN KEY (artist_id) REFERENCES artists(id)
       )
@@ -49,7 +49,7 @@ appDB.serialize(() => {
     appDB.run(`
       CREATE TABLE IF NOT EXISTS products (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
+        title TEXT NOT NULL,
         description TEXT,
         priceId TEXT NOT NULL,
         productId TEXT UNIQUE

@@ -2,7 +2,7 @@ import './App.css'
 import { Link } from 'react-router-dom';
 import AudioPlayer from "./components/AudioPlayer.jsx";
 const API = "http://localhost:5173";
-import zoo2 from "./image/zoo2.jpeg"
+import farm_food from "./image/farm_food.jpg"
 function App() {
   const username = localStorage.getItem("username")
   console.log("username", username)
@@ -11,7 +11,7 @@ function App() {
   return (
     <div>
     <div className='parent-container'>
-    <img src={zoo2} style={{width: "100%"}}/>
+    <img src={farm_food} style={{width: "100%"}}/>
     <div className='bottom-left'>
       <div className='main-title'>
       <b><h1>Greenfield Local Hub</h1></b>

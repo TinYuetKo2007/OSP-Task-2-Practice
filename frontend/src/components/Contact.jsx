@@ -1,4 +1,4 @@
-function Dashboard(){
+function Contact(){
 
     //  light or dark mode
 
@@ -7,7 +7,7 @@ function Dashboard(){
         <div>
         <div className={`form-container`}>
             <div className="form">
-              <h2>Harmoniq</h2>
+              <h2>GLH</h2>
                 <h3>You can contact us here. Feel free to drop a message!</h3>
                     <input type="email" placeholder="Your Email"/>
                     <textarea rows="4" cols="50"/><br/>
@@ -18,4 +18,4 @@ function Dashboard(){
     )
 }
 
-export default Dashboard;
+export default Contact;

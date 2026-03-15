@@ -51,6 +51,7 @@ export default function AdminPage() {
     <>
       <h1>Admin Dashboard</h1>
       <UsersTable />
+      <button onClick= {() => navigate("add-product")}>Add Product</button>
     </>
   );
 }

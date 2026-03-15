@@ -63,12 +63,7 @@ app.post("/login", (req, res) => {
     });
   });
   
-app.use(verify);
-/* JWT is valid or not
- Returns actual user as object */
-app.get("/me", verify, (req, res) => {
-  return res.json(req.user)
-});
+
 
 app.post("/create-checkout-session", async (req, res) => {
   try {
@@ -174,24 +169,67 @@ app.post("/notes", verify, async (req, res) => {
   } 
 });
 
-
 app.get("/products", async (req, res) => {
-  try {
-    const products = await fetchAll(appDB, "SELECT * FROM products");
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-
+  const products = await fetchAll(appDB, "SELECT * FROM products");
+  res.json(products);
 });
-app.get("/products/:productId", async (req, res) => {
-  const rows = await fetchAll(
+
+app.post("/products", async (req, res) => {
+  const { title, description, image, price } = req.body;
+
+  try {
+
+    // Product properties
+    const stripeProduct = await stripe.products.create({
+      title: title,
+      description: description,
+      images: [image],
+    });
+
+    // Create price
+    const stripePrice = await stripe.prices.create({
+      product: stripeProduct.id,
+      unit_amount: price * 100,
+      currency: "gbp"
+    });
+
+    // Save to DB
+    await runQuery(
+      appDB,
+      `INSERT INTO products (title, description, image, price, stripeProductId, stripePriceId)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        title,
+        description,
+        image,
+        price,
+        stripeProduct.id,
+        stripePrice.id
+      ]
+    );
+
+    res.json({ success: true });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.get("/products/:id", async (req, res) => {
+  const product = await fetchOne(
     appDB,
-    "SELECT * FROM products WHERE productId = ?",
-    [req.params.productId]
+    "SELECT * FROM products WHERE id = ?",
+    [req.params.id]
   );
 
-  res.json(rows[0]);
+  res.json(product);
+});
+
+app.use(verify);
+/* JWT is valid or not
+ Returns actual user as object */
+app.get("/me", verify, (req, res) => {
+  return res.json(req.user)
 });
 
 // only work for admins

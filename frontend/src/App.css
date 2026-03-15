@@ -1,3 +1,4 @@
+/* @import "tailwindcss"; */
 body {
   font-family: Arial, sans-serif;
   justify-content: space-between;
@@ -20,11 +21,31 @@ body {
 
 /*Form CSS */
 .form-container {
-  background-color: #c7f3ff;
+  background-color: #ffe2b6;
   padding: 100px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 50%;
   height: 100%;
+  align-items: left;
+  justify-content: center;
+}
+.form-container img{
+  width: 200px;
+  height: 200px;
+}
+.alt-form-container {
+  background-color: #ffe2b6;
+  padding: 100px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 50%;
+  align-items: left;
+  justify-content: center;
+}
+.product-searcher {
+  background-color: #ffe2b6;
+  padding: 100px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 120px;
   align-items: left;
   justify-content: center;
 }
@@ -55,7 +76,7 @@ body {
 
 .form button {
   padding: 10px;
-  background-color:#385511;
+  background-color:#134700;
   color: white;
   border: none;
   font-size: large;
@@ -76,9 +97,11 @@ body {
 }
 
 .form textarea {
-  width: 300px;
+  width: 100%;
   height: 100px;
   resize: none;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 h1 {
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -87,12 +110,19 @@ h1 {
 .topnav {
   width: 100%;
   display: flex;
-  background-color: #385511;
+  background-color: #134700;
   justify-content: space-between;
   align-items: center;
   margin: 0 auto;
   left: 0;
   top: 0;
+}
+.topnav div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-left: 25px;
+  padding-right: 25px;
 }
 
 .topnav a {
@@ -101,17 +131,17 @@ h1 {
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
-  font-size: 17px;
+  font-size: 21px;
 }
 
 .topnav button {
   float: left;
-  background-color: #385511;
+  background-color: #134700;
   color: #ffffff;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
-  font-size: 17px;
+  font-size: 21px;
 }
 .topnav a:hover {
   background-color: #ddd;
@@ -136,6 +166,9 @@ h1 {
     font-size: 15px;
     padding: 5px 5px;
   }
+  .topnav h1 {
+    font-size: 15px;
+  }
 }
 .container img {
   width: 50%;
@@ -157,62 +190,18 @@ textarea {
   flex-wrap: wrap;
   background-color: white;
 }
-/* Audio card */
-.player-card {
-  width: 20rem;
-  background-color: #f1f4f9;
-  padding: 1rem
-}
-
-input[type="range"] {
-  width: 100%;
-  height: 5px;
-  accent-color: #79fd2c;
-  outline: none;
-}
-
-.track-duration {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
-.track-duration > p {
-  font-size: 10px;
-  font-weight: 500;
-  color: #18181f;
-  margin: 0;
-}
-
-.player-card button {
-  width: 3rem;
-  height: 3rem;
-  font-size: 34px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  background-color: #79fd2c;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  margin: 5px auto 10px auto;
-}
-.player-card img {
-  width: 315px;
-  height: 315px;
-  align-items: center;
-  justify-content: center;
-}
 
 .product-list {
   border-radius: 10px;
   font-size: large;
-  border-color: #385511;
-  border: 2px solid #385511;
+  display: grid;
   padding: 40px;
+  overflow-y: scroll;
+}
+
+.product-list img {
+  width: 200px;
+  height: 200px;
 }
 
 body.dark-mode {
@@ -231,13 +220,6 @@ body.dark-mode {
 }
 .topnav.dark-mode h1 {
   color: #000000;
-}
-.dark-mode .player-card {
-  background-color: #00245e;
-}
-
-.dark-mode .track-duration p {
-  color: #ffffff;
 }
 .dark-mode .form-container {
   background-color: #00245e;
@@ -286,9 +268,15 @@ table {
 }
 
 footer {
-  background-color: rgb(255, 226, 182);
+  background-color: #ffe2b6;
   width: 100%;
   padding: auto;
+  display: flex;
+  flex-direction: row;
+}
+footer a {
+  color: #000000;
+  padding: 20px;
 }
 footer div {
   padding: 20px;
@@ -299,7 +287,7 @@ footer div {
 }
 
 .songs-table > div:nth-of-type(odd) {
-  background-color: rgb(255, 226, 182);
+  background-color: #ffe2b6;
   padding: 20px;
   display: flex;
   gap: 20px;
@@ -326,14 +314,115 @@ footer div {
 .parent-container {
    position: relative; 
    text-align: left; 
-   color: white; 
+   color: #000000; 
 }
 .main-title {
   font-size: 40px;
+  background-color: rgba(255, 226, 182, 0.7);
+  padding: 2px;
 }
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1000px) {
   .main-title {
     font-size: 20px
 }
 }
-  
+
+.search-bar input {
+  background-color: #ffffff;
+  height: 30px;
+  font-size: 15px;
+}
+.dark-mode .search-bar input {
+  background-color: #000000;
+  color: #ffffff;
+}
+.search-bar {
+  position: relative;
+  width: 200px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 9999; 
+  background: white;
+  border: 1px solid #ddd;
+  border-top: none;
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  max-height: 300px;
+  overflow-y: auto;
+
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.search-results li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.search-results li:hover {
+  background: #f5f5f5;
+}
+
+.dark-mode .search-bar ul {
+  color: #000000;
+}
+/* Products page*/
+.products-page .container {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  margin: 40px auto;
+  max-width: 1200px;
+}
+
+.products-page .product-searcher {
+  width: 300px;
+  padding: 20px;
+  background-color: #ffe2b6;
+}
+
+.dark-mode .products-page .product-searcher {
+  background-color: #522903;
+}
+
+.products-page .product-list {
+  flex: 1;
+  padding: 20px;
+}
+
+.products-page .products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 30px;
+  list-style: none;
+  padding: 0;
+}
+
+.products-page .products-grid p {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  color: #134700;
+}
+
+.products-page .products-grid img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
