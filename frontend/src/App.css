@@ -21,7 +21,7 @@ body {
 
 /*Form CSS */
 .form-container {
-  background-color: #ffe2b6;
+  background-color: #6B4C1F;
   padding: 100px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 50%;
@@ -34,7 +34,7 @@ body {
   height: 200px;
 }
 .alt-form-container {
-  background-color: #ffe2b6;
+  background-color: #6B4C1F;
   padding: 100px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 50%;
@@ -42,7 +42,7 @@ body {
   justify-content: center;
 }
 .product-searcher {
-  background-color: #ffe2b6;
+  background-color: #FFE2B6;
   padding: 100px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 120px;
@@ -58,6 +58,7 @@ body {
   justify-content: center;
   height: 100%;
   width: 100%;
+  color: #fff;
 }
 
 .form h2 {
@@ -76,8 +77,8 @@ body {
 
 .form button {
   padding: 10px;
-  background-color:#134700;
-  color: white;
+  background-color:#ffffff;
+  color: #134700;
   border: none;
   font-size: large;
   border-radius: 5px;
@@ -205,29 +206,35 @@ textarea {
 }
 
 body.dark-mode {
-  background-color: #18181f;
+  background-color: #134700;
   color: #ffffff;
 }
 .topnav.dark-mode {
-  background-color: #d4ffc7;
+  background-color: #ffffff;
 }
 .topnav.dark-mode a {
-  color: #000000
+  color: #134700
 }
 .topnav.dark-mode button {
-  background-color: #d4ffc7;
-  color: #000000;
+  background-color: #ffffff;
+  color: #134700;
 }
 .topnav.dark-mode h1 {
-  color: #000000;
+  color: #134700;
 }
 .dark-mode .form-container {
-  background-color: #00245e;
+  background-color: #FFE2B6;
+  color: #000;
 }
-
+.dark-mode form {
+  color: #000;
+}
 .dark-mode .form-container .form button {
-  background-color: #c7f3ff;
-  color: #000000;
+  background-color: #035203;
+  color: #fff;
+}
+.dark-mode .form a {
+  color: #035203;
 }
 .dark-mode .material-symbols-rounded {
   color:#000000
@@ -257,25 +264,28 @@ table {
 }
 
 .second-section {
-  background-color: #c4ffa1;
+  background-color: #6B4C1F;
+  color: #fff;
   width: 100%;
   padding: 10px;
   justify-content: center;
 }
 
 .dark-mode .second-section {
-  background-color: #385511;
+  background-color: #FFE2B6;
+  color: #000;
 }
 
 footer {
-  background-color: #ffe2b6;
+  background-color: #134700;
+  color: #ffffff;
   width: 100%;
   padding: auto;
   display: flex;
   flex-direction: row;
 }
 footer a {
-  color: #000000;
+  color: #ffffff;
   padding: 20px;
 }
 footer div {
@@ -283,9 +293,12 @@ footer div {
 }
 
 .dark-mode footer {
-  background-color: #522903;
+  background-color: #ffffff;
+  color: #134700;
 }
-
+.dark-mode footer a {
+    color: #134700;
+  }
 .songs-table > div:nth-of-type(odd) {
   background-color: #ffe2b6;
   padding: 20px;
@@ -393,11 +406,11 @@ footer div {
 .products-page .product-searcher {
   width: 300px;
   padding: 20px;
-  background-color: #ffe2b6;
+  background-color: #6B4C1F;
 }
 
 .dark-mode .products-page .product-searcher {
-  background-color: #522903;
+  background-color: #ffe2b6;
 }
 
 .products-page .product-list {
@@ -420,7 +433,12 @@ footer div {
   text-align: center;
   color: #134700;
 }
-
+.products-page .products-grid a {
+  color: #134700;
+}
+.dark-mode .products-page .products-grid a {
+  color: #fff;
+}
 .products-page .products-grid img {
   width: 200px;
   height: 200px;
