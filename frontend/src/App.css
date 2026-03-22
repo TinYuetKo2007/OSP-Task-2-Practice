@@ -145,12 +145,12 @@ h1 {
   font-size: 21px;
 }
 .topnav a:hover {
-  background-color: #ddd;
-  color: black;
+  background-color: #fff;
+  color: #134700;
 }
 .topnav button:hover {
-  background-color: #ddd;
-  color: black;
+  background-color: #fff;
+  color: #134700;
 }
 .topnav a.active {
   background-color: #dfffc1;
@@ -183,6 +183,23 @@ h1 {
     overflow: hidden;
 }
 
+button {
+  float: left;
+  background-color: #134700;
+  color: #ffffff;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 21px;
+}
+button:hover {
+  background-color: #ddd;
+  color: black;
+}
+.dark-mode button {
+  background-color:#ffffff;
+  color: #134700;
+}
 textarea {
   font-family: Arial, sans-serif;
 }
@@ -219,6 +236,14 @@ body.dark-mode {
   background-color: #ffffff;
   color: #134700;
 }
+.topnav.dark-mode button:hover {
+  background-color: #134700;
+  color: #fff;
+}
+.topnav.dark-mode a:hover {
+  background-color: #134700;
+  color: #fff;
+}
 .topnav.dark-mode h1 {
   color: #134700;
 }
@@ -241,15 +266,12 @@ body.dark-mode {
 }
 
 .dark-mode .notes-display {
-  background-color: #522903;
+  background-color: #6B4C1F;
 }
-table {
-  width: 100%;
-  border:#522903;
-  border-radius: 10px;
-  border: 2px solid #385511;
-  padding: 30px;
-  text-align: center;
+
+.dark-mode table {
+  background-color: #FFE2B6;
+  color: #000;
 }
 
 .notes-display {
@@ -443,4 +465,133 @@ footer div {
   width: 200px;
   height: 200px;
   object-fit: cover;
+}
+
+.admin-dashboard {
+  padding: 40px;
+  text-align: center;
+}
+
+.admin-layout {
+  display: flex;
+  justify-content: center;
+  gap: 120px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.admin-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  width: 400px;
+  align-items: center;
+}
+
+.edit-btn {
+  background-color: #134700;
+  color: white;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 18px;
+}
+
+/* ================= SHARED ADMIN TABLE ================= */
+
+.admin-dashboard table,
+.edit-page table {
+  width: 400px;
+  height: 350px;
+  background-color: #6B4C1F;
+  color: white;
+  border-radius: 5px;
+  margin-top: 10px;
+  display: block;
+  overflow: hidden;
+}
+
+/* sticky header */
+
+.admin-dashboard table thead,
+.edit-page table thead {
+  display: block;
+  position: sticky;
+  top: 0;
+  background-color: #6B4C1F;
+  z-index: 1;
+}
+
+/* scrollable body */
+
+.admin-dashboard table tbody,
+.edit-page table tbody {
+  display: block;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* rows */
+
+.admin-dashboard table tr,
+.edit-page table tr {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  align-items: center;
+}
+
+/* columns */
+
+.admin-dashboard table th,
+.admin-dashboard table td,
+.edit-page table th,
+.edit-page table td {
+  width: 33%;
+  text-align: left;
+}
+
+/* action column center */
+
+.admin-dashboard table td:last-child,
+.edit-page table td:last-child {
+  text-align: center;
+}
+
+/* delete button */
+
+.edit-page table button,
+.admin-dashboard table button {
+  background-color: #134700;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+}
+
+/* dark mode */
+
+.dark-mode .admin-dashboard table,
+.dark-mode .edit-page table {
+  background-color: #FFE2B6;
+  color: black;
+}
+
+.dark-mode .admin-dashboard table thead,
+.dark-mode .edit-page table thead {
+  background-color: #FFE2B6;
+}
+
+/* report button */
+
+.report-btn {
+  margin-top: 40px;
+  background-color: #134700;
+  color: white;
+  padding: 20px 40px;
+  font-size: 24px;
+  border-radius: 15px;
 }

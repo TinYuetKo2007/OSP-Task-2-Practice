@@ -51,6 +51,7 @@ export default function Products() {
     </>
   ) : (
     <div className="products-page">
+      <h1>Products</h1>
       <div className="container">
         <div className="product-searcher">
           <SearchBar
@@ -61,7 +62,6 @@ export default function Products() {
         </div>
 
         <div className="product-list">
-          <h1>Products</h1>
 
           <ul className="products-grid">
             {products.map((product) => (

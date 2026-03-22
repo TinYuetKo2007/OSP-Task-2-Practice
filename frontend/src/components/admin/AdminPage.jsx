@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import UsersTable from "./UsersTable";
+import ProductsTable from "./ProductsTable";
 
 export default function AdminPage() {
   const navigate = useNavigate();
@@ -48,10 +49,40 @@ export default function AdminPage() {
   }
 
   return (
-    <>
-      <h1>Admin Dashboard</h1>
-      <UsersTable />
-      <button onClick= {() => navigate("add-product")}>Add Product</button>
-    </>
-  );
+  <div className="admin-dashboard">
+    <h1>Admin Dashboard</h1>
+
+    <div className="admin-layout">
+      
+      <div className="admin-section">
+        <div className="admin-header">
+          <h3>List of Users</h3>
+          <button className="edit-btn" onClick={() => navigate("/admin/edit/users")}>Edit</button>
+        </div>
+        <UsersTable />
+      </div>
+
+      <div className="admin-section">
+        <div className="admin-header">
+          <h3>List of Products</h3>
+          <button className="edit-btn" onClick={() => navigate("/admin/edit/products")}>Edit</button>
+        </div>
+        <ProductsTable />
+      </div>
+
+    </div>
+
+    <button 
+      className="report-btn"
+      onClick={() => navigate("add-product")}
+    >
+      Add Product
+    </button>
+        <button 
+      className="report-btn"
+    >
+      Create report
+    </button>
+  </div>
+);
 }

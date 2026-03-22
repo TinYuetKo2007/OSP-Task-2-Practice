@@ -11,7 +11,7 @@ export default function AddProduct({onSuccess}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!title || !description) {
+        if (!title || !description || !price) {
             setMessage("Please enter title and content.");
             return;
         }

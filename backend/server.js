@@ -63,7 +63,20 @@ app.post("/login", (req, res) => {
     });
   });
   
+app.delete("/users/:id", verify, async (req, res) => {
+  if (req.user.role !== "ADMIN") {
+    return res.status(403).json({ success: false, message: "Unauthorized" });
+  }
 
+  const userId = req.params.id;
+
+  try {
+    await execute(appDB, "DELETE FROM users WHERE id = ?", [userId]);
+    res.json({ success: true, message: "User deleted" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Delete failed" });
+  }
+});
 
 app.post("/create-checkout-session", async (req, res) => {
   try {

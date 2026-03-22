@@ -15,6 +15,7 @@ import AdminPage from './components/admin/AdminPage.jsx'
 import SongPage from './components/SongPage.jsx'
 import Songs from './components/Songs.jsx'
 import AddProduct from './components/admin/AddProduct.jsx'
+import EditPage from './components/admin/EditPage.jsx'
 
 // Links
 export const routeConfig = [
@@ -30,9 +31,11 @@ export const routeConfig = [
       { path: "profile", element: <Profile />, name: "Profile" },
       { path: "contact", element: <Contact />, name: "Contact Page" },
       { path: "aboutus", element: <AboutUs />, name: "About Us" },
+
       { path: "admin", children: [
         {index: true, element: <AdminPage />, searchable: false,},
-        { path: "add-product", element: <AddProduct />, searchable: false,}
+        { path: "add-product", element: <AddProduct />, searchable: false,},
+        {path: "edit/:type", element: <EditPage />, searchable: false}
       ]},
       { path: "notes", element: <Notes />, name: "Notes Tracker" },
 
