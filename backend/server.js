@@ -194,7 +194,7 @@ app.post("/products", async (req, res) => {
 
     // Product properties
     const stripeProduct = await stripe.products.create({
-      title: title,
+      name: title,
       description: description,
       images: [image],
     });
@@ -207,9 +207,9 @@ app.post("/products", async (req, res) => {
     });
 
     // Save to DB
-    await runQuery(
+    const product = await execute(
       appDB,
-      `INSERT INTO products (title, description, image, price, stripeProductId, stripePriceId)
+      `INSERT INTO products (title, description, image, price, productId, priceId)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [
         title,
@@ -221,10 +221,10 @@ app.post("/products", async (req, res) => {
       ]
     );
 
-    res.json({ success: true });
-
+    res.json({ success: true, product });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+    console.log(err)
   }
 });
 

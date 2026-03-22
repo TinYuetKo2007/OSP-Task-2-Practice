@@ -12,7 +12,7 @@ function Header () {
         localStorage.removeItem("token");
         navigate("/login");
     }
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState((localStorage.getItem("theme") ?? "light") === "dark");
 
     //  light or dark mode
     const toggleTheme = () => {

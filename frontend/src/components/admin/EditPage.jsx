@@ -56,9 +56,11 @@ export default function EditPage() {
 
   return (
     <div className="edit-page">
-      <h1>Edit {type}</h1>
-
+      <div className="admin-header">
       <button onClick={() => navigate(-1)}>Back</button>
+      </div>
+
+      <h1>Edit {type}</h1>
 
       <table>
         <thead>
@@ -89,7 +91,7 @@ export default function EditPage() {
                 </>
               ) : (
                 <>
-                  <td>{item.name}</td>
+                  <td>{item.title}</td>
                   <td>£{item.price}</td>
                 </>
               )}

@@ -226,25 +226,25 @@ body.dark-mode {
   background-color: #134700;
   color: #ffffff;
 }
-.topnav.dark-mode {
+.dark-mode .topnav {
   background-color: #ffffff;
 }
-.topnav.dark-mode a {
+.dark-mode .topnav a {
   color: #134700
 }
-.topnav.dark-mode button {
+.dark-mode .topnav button {
   background-color: #ffffff;
   color: #134700;
 }
-.topnav.dark-mode button:hover {
+.dark-mode .topnav button:hover {
   background-color: #134700;
   color: #fff;
 }
-.topnav.dark-mode a:hover {
+.dark-mode .topnav a:hover {
   background-color: #134700;
   color: #fff;
 }
-.topnav.dark-mode h1 {
+.dark-mode .topnav h1 {
   color: #134700;
 }
 .dark-mode .form-container {
@@ -501,8 +501,6 @@ footer div {
   font-size: 18px;
 }
 
-/* ================= SHARED ADMIN TABLE ================= */
-
 .admin-dashboard table,
 .edit-page table {
   width: 400px;
@@ -515,8 +513,6 @@ footer div {
   overflow: hidden;
 }
 
-/* sticky header */
-
 .admin-dashboard table thead,
 .edit-page table thead {
   display: block;
@@ -526,16 +522,12 @@ footer div {
   z-index: 1;
 }
 
-/* scrollable body */
-
 .admin-dashboard table tbody,
 .edit-page table tbody {
   display: block;
   max-height: 300px;
   overflow-y: auto;
 }
-
-/* rows */
 
 .admin-dashboard table tr,
 .edit-page table tr {
@@ -545,8 +537,6 @@ footer div {
   align-items: center;
 }
 
-/* columns */
-
 .admin-dashboard table th,
 .admin-dashboard table td,
 .edit-page table th,
@@ -555,14 +545,10 @@ footer div {
   text-align: left;
 }
 
-/* action column center */
-
 .admin-dashboard table td:last-child,
 .edit-page table td:last-child {
   text-align: center;
 }
-
-/* delete button */
 
 .edit-page table button,
 .admin-dashboard table button {
@@ -571,8 +557,6 @@ footer div {
   padding: 8px 16px;
   border-radius: 10px;
 }
-
-/* dark mode */
 
 .dark-mode .admin-dashboard table,
 .dark-mode .edit-page table {
@@ -584,8 +568,6 @@ footer div {
 .dark-mode .edit-page table thead {
   background-color: #FFE2B6;
 }
-
-/* report button */
 
 .report-btn {
   margin-top: 40px;

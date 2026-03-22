@@ -6,18 +6,19 @@ export default function AddProduct({onSuccess}) {
     const [image, setImage] = useState("")
     const [description, setDescription] = useState("")
     const [price, setPrice] = useState(0.0)
+    const [category, setCategory] = useState("")
     const [_, setMessage] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!title || !description || !price) {
+        if (!image || !title || !description || !price || !category) {
             setMessage("Please enter title and content.");
             return;
         }
 
         try {
-            const res = await axios.post("http://localhost:4000/products", { image, title, description }, {
+            const res = await axios.post("http://localhost:4000/products", { image, title, description, price, category }, {
                 headers: { Authorization: "Bearer " + localStorage.getItem("token") },
             });
 
@@ -55,6 +56,12 @@ export default function AddProduct({onSuccess}) {
                 placeholder="Description" 
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+            />
+            <input 
+                type="text" 
+                placeholder="Category" 
+                value={image}
+                onChange={(e) => setCategory(e.target.value)}
             />
             <input
             type="number"
