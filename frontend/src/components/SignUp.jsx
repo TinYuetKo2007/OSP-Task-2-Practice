@@ -1,9 +1,12 @@
-import giraffe from "../image/giraffe.jpg"
+import bakery from "../image/bread_bakery.jpg"
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-function SignUp() {
+export default function SignUp() {
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [forename, setForename] = useState("");
+    const [surname, setSurname] = useState("")
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
@@ -11,24 +14,31 @@ function SignUp() {
  const handleRegister = async (e) => {
         e.preventDefault();
 
-        if (!username || !password) {
+        if (!username ||  !forename || !surname || !email || !password) {
             setMessage("Please enter username and password.");
             return;
         }
-
+        if (password.length < 8) {
+            setMessage("Password must be at least 8 characters.");
+            return;
+        }
+         
         try {
             const res = await fetch("http://localhost:4000/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ username, forename, surname, email, password }),
             });
 
             const data = await res.json();
 
             if (data.success) {
                 localStorage.setItem("username", username);
+                if (data.token) {
+                    localStorage.setItem("token", data.token);
+                }
                 setMessage("Registration successful! Redirecting...");
-                setTimeout(() => navigate("/profile"), 1000);
+                setTimeout(() => navigate("/profile"), 1500);
             } else {
                 setMessage(data.message || "Registration failed.");
             }
@@ -40,16 +50,35 @@ function SignUp() {
     return (
         <div className="container" style={{ height: "100vh"}}>
             <div className="form-container">
+                <button onClick={() => navigate("/")}>Go Back</button>
                     <form className="form" onSubmit={handleRegister}>
-                    <button onClick={() => navigate("/")}>Go Back</button>
                     <h1>Sign Up</h1>
                     <input 
                     type="text" 
                     placeholder="Username" 
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}/>
+                    <div style={{display:"flex", flexDirection: "row"}}>
+                        <input 
+                        type="text" 
+                        placeholder="First Name" 
+                        value={forename}
+                        onChange={(e) => setForename(e.target.value)}
+                        className="name-input"/>
 
+                        <input 
+                        type="text" 
+                        placeholder="Last Name" 
+                        value={surname}
+                        onChange={(e) => setSurname(e.target.value)}
+                        className="name-input"/>
+                    </div>
                     <input 
+                    type="email" 
+                    placeholder="Email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}/>
+                    <input
                     type="password" 
                     placeholder="Password" 
                     value={password}
@@ -59,8 +88,7 @@ function SignUp() {
                 </form>
                     <p>{message}</p>
             </div>
-            <img src={giraffe} />
+            <img src={bakery} />
         </div>
     )
 }
-export default SignUp;

@@ -40,7 +40,7 @@ function Header () {
       />
             </div>
                 {username ? <div>
-                <Link to={"/notes"}>Notes</Link>
+                <Link to={"/profile"}>Profile</Link>
                 <button onClick={toggleTheme} className="theme-toggle">
         {isDarkMode ? "Light Mode" : "Dark Mode"}
                 </button>

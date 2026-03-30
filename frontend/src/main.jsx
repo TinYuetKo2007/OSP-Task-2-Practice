@@ -10,42 +10,42 @@ import Profile from './components/Profile.jsx'
 import AboutUs from './components/AboutUs.jsx'
 import Products from './components/Products.jsx'
 import ProductPage from './components/ProductPage.jsx'
-import Notes from './components/Notes.jsx'
+import Reports from './components/Reports.jsx'
 import AdminPage from './components/admin/AdminPage.jsx'
-import SongPage from './components/SongPage.jsx'
-import Songs from './components/Songs.jsx'
 import AddProduct from './components/admin/AddProduct.jsx'
 import EditPage from './components/admin/EditPage.jsx'
+import { BasketProvider } from "./BasketContext";
+import Basket from './components/Basket.jsx'
+import BasketSuccess from "./components/BasketSuccess";
+import ProfileSettings from './components/ProfileSettings.jsx'
+import ForgotPassword from './components/ForgotPassword.jsx'
+import ResetPassword from './components/ResetPassword.jsx'
 
 // Links
 export const routeConfig = [
   { path: "/login", element: <Login /> },
   { path: "/signup", element: <SignUp /> },
+  { path:"/forgot-password", element:<ForgotPassword /> },
+  { path: "/reset-password/", element:<ResetPassword /> },
 
   {
     path: "/",
     element: <RootLayout />,
     children: [
       { index: true, element: <App />, name: "Home" },
-
+      { path: "basket", element: <Basket /> },
       { path: "profile", element: <Profile />, name: "Profile" },
+      { path: "settings", element: <ProfileSettings />, name: "Settings" },
       { path: "contact", element: <Contact />, name: "Contact Page" },
       { path: "aboutus", element: <AboutUs />, name: "About Us" },
+      { path: "basket-success", element: <BasketSuccess />, searchable: false,},
 
       { path: "admin", children: [
         {index: true, element: <AdminPage />, searchable: false,},
-        { path: "add-product", element: <AddProduct />, searchable: false,},
-        {path: "edit/:type", element: <EditPage />, searchable: false}
+        {path: "add-product", element: <AddProduct />, searchable: false,},
+        {path: "edit/:type", element: <EditPage />, searchable: false},
+        {path: "reports", element: <Reports />, searchable: false},
       ]},
-      { path: "notes", element: <Notes />, name: "Notes Tracker" },
-
-      {
-        path: "songs",
-        children: [
-          { index: true, element: <Songs />, name: "Songs" },
-          { path: ":songId", element: <SongPage /> }
-        ]
-      },
 
       {
         path: "products",
@@ -94,6 +94,8 @@ export const searchPages = getSearchPages(routeConfig);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={Router}/>
-  </StrictMode>,
+    <BasketProvider>
+      <RouterProvider router={Router}/>
+    </BasketProvider>
+  </StrictMode>
 )

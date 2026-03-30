@@ -1,10 +1,9 @@
 import { useState } from "react";
-import giraffe from "../image/giraffe.jpg"
+import bakery from "../image/bread_bakery.jpg"
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Header from "./Header";
 
-function Login() {
+export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -34,8 +33,8 @@ function Login() {
     return (
         <div className="container" style={{ height: "100vh"}}>
             <div className="form-container">
+              <button onClick= {() => navigate("/")}>Go Back</button>
                     <form className="form" onSubmit={handleLogin}>
-                        <button onClick= {() => navigate("/")}>Go Back</button>
                         <h1>Login</h1>
                         <input 
                         required
@@ -50,14 +49,15 @@ function Login() {
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}/>
-                        <a href="#">Forgot Password?</a>
+                        <Link to="/forgot-password">
+                          Forgot Password?
+                        </Link>
                         <button type="submit">Log In</button>
                         <p>Not a member? <Link to="/signup">Sign Up</Link></p>
+                        {message && <p className="login-message">{message}</p>}
                     </form>
-                    <p>{message}</p>
                  </div>
-            <img src={giraffe} />
+            <img src={bakery} />
         </div>
     )
 }
-export default Login;

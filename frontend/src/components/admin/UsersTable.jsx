@@ -36,8 +36,8 @@ export default function UsersTable() {
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       <thead>
         <tr>
-          <th style={{ padding: "10px" }}>Username</th>
-          <th style={{ padding: "10px" }}>Role</th>
+          <th>Username</th>
+          <th>Role</th>
         </tr>
       </thead>
 
