@@ -33,8 +33,8 @@ export default function CreateReports({onSuccess}) {
     };
 
     return (
-        <>
-        <div className="form-container">
+        <div className="container">
+            <div className="alt-form-container" style={{ alignItems: "center" }}>
         <form className="form" onSubmit={handleSubmit}>
             <h1>Add a Report</h1>
 
@@ -52,6 +52,6 @@ export default function CreateReports({onSuccess}) {
             <button type="submit">Create Report</button>
         </form>
         </div>
-        </>
+        </div>
     )
 }

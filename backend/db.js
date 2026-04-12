@@ -60,16 +60,18 @@ appDB.serialize(() => {
   /* PRODUCTS */
   appDB.run(`
     CREATE TABLE IF NOT EXISTS products (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
-      description TEXT,
-      price FLOAT NOT NULL DEFAULT 0,
-      priceId TEXT NOT NULL,
-      productId TEXT UNIQUE,
-      image TEXT,
-      category TEXT NOT NULL,
-      stock INTEGER NOT NULL DEFAULT 0
-    )
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT,
+    price FLOAT NOT NULL DEFAULT 0,
+    priceId TEXT NOT NULL,
+    productId TEXT UNIQUE,
+    image TEXT,
+    category TEXT NOT NULL,
+    stock INTEGER NOT NULL DEFAULT 0,
+    producerId INTEGER NOT NULL,
+    FOREIGN KEY (producerId) REFERENCES users(id)
+  )
   `);
 
   /* ORDERS */
@@ -100,9 +102,9 @@ appDB.serialize(() => {
     )
   `);
 
-  /* NOTES */
+  /* REPORTS */
   appDB.run(`
-    CREATE TABLE IF NOT EXISTS notes (
+    CREATE TABLE IF NOT EXISTS reports (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       userId INTEGER,
       title TEXT NOT NULL,
@@ -121,18 +123,44 @@ appDB.serialize(() => {
       date DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+  appDB.run(`
+    CREATE TABLE IF NOT EXISTS producerApplications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL,
+    userId INTEGER NOT NULL,
+    producerName TEXT NOT NULL,
+    address TEXT NOT NULL,
+    description TEXT NOT NULL,
+    fsaRating INTEGER,
+    hygieneCertUrl TEXT,
+    status TEXT DEFAULT 'PENDING',
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (userId) REFERENCES users(id)
+)`);
 
 });
 
-export const updateStock = async (productId, quantity) => {
-  const sql = `
-    UPDATE products 
-    SET stock = stock + ? 
-    WHERE productId = ? 
-    AND (stock + ?) >= 0
-  `;
-  return execute(appDB, sql, [quantity, productId, quantity]);
-};
+export async function updateStock(productId, quantityChange) {
+  try {
+
+    console.log("Updating stock:", productId, quantityChange);
+
+    const result = await execute(
+      appDB,
+      "UPDATE products SET stock = stock + ? WHERE productId = ?",
+      [quantityChange, productId]
+    );
+
+    console.log("Rows changed:", result.changes);
+
+    return result;
+
+  } catch (err) {
+    console.error("UPDATE STOCK ERROR:", err);
+    throw err;
+  }
+}
 
 export const checkAvailability = async (productId) => {
   const sql = `SELECT stock FROM products WHERE productId = ?`;

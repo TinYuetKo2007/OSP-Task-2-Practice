@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import CreateReports from "./CreateReports";
+import CreateReports from "../CreateReports";
+import farm_food from "../../image/farm_food.jpg"
+import default_image from "../../image/default_image.png"
+
 export default function Reports() {
   const [loading, setLoading] = useState(false);
   const [reports, setReports] = useState(null);
@@ -36,11 +39,25 @@ export default function Reports() {
     );
   }
   return (
-    <div style={{display: "flex", 
-    flexDirection: "column", 
-    maxWidth: "100%",
-    alignItems: "start"}}>
-    <h1>Admin Reports</h1>
+    <div>
+        <div className='parent-container'>
+          <img src={farm_food}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = default_image;
+          }} 
+          style={{
+          width: "100vw",
+        height: "170px",
+        objectFit: "cover",
+        filter: "brightness(50%)"
+          }}/>
+            <div className='bottom-left'>
+          <div className='main-title'>
+          <b><h2>Admin Reports</h2></b>
+          </div>
+        </div>
+      </div>
     <div className="flex-container">
 
       <div>

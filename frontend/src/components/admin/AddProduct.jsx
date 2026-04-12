@@ -10,6 +10,7 @@ export default function AddProduct({ onSuccess }) {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0.0);
   const [category, setCategory] = useState("");
+  const [stock, setStock] = useState(0);
 
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
@@ -61,7 +62,7 @@ export default function AddProduct({ onSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!image || !title || !description || !price || !category) {
+    if (!image || !title || !description || !price || !category || !stock) {
       setMessage("Please fill in all fields.");
       return;
     }
@@ -69,7 +70,7 @@ export default function AddProduct({ onSuccess }) {
     try {
       const res = await axios.post(
         "http://localhost:4000/products",
-        { image, title, description, price, category },
+        { image, title, description, price, category, stock },
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -79,7 +80,7 @@ export default function AddProduct({ onSuccess }) {
 
       const data = res.data;
 
-      if (data.success) {
+      if (data.success || res.status === 200) {
         setMessage("Product added successfully.");
 
         setTitle("");
@@ -116,19 +117,32 @@ export default function AddProduct({ onSuccess }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-
         <textarea
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <option value="" disabled>Category</option>
 
-        <input
-          type="text"
-          placeholder="Category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        />
+          <option value="Vegetables">Vegetables</option>
+          <option value="Fruits">Fruits</option>
+          <option value="Herbs">Herbs</option>
+          <option value="Salads">Salads & Greens</option>
+
+          <option value="Dairy">Dairy</option>
+          <option value="Eggs">Eggs</option>
+          <option value="Meat">Meat</option>
+
+          <option value="Bakery">Bakery</option>
+          <option value="Homemade">Homemade Goods</option>
+
+          <option value="Honey">Honey</option>
+          <option value="Preserves">Preserves</option>
+          <option value="Condiments">Condiments & Oils</option>
+
+          <option value="Drinks">Drinks</option>
+        </select>
         <p style={{paddingBottom: "0px"}}>Price</p>
         <input
           type="number"
@@ -137,10 +151,16 @@ export default function AddProduct({ onSuccess }) {
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
         />
-
+        <p style={{paddingBottom: "0px"}}>Stock</p>
+        <input
+          type="number"
+          placeholder="Stock"
+          value={stock}
+          onChange={(e) => setStock(Number(e.target.value))}
+        />
+        {message && <p>{message}</p>}
         <button type="submit">Add New Product</button>
 
-        {message && <p>{message}</p>}
       </form>
     </div>
     </div>

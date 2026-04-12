@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import farm_food from "../image/farm_food.jpg";
+import default_image from "../image/default_image.png";
 
 export default function Profile () {
     const navigate = useNavigate();
@@ -8,8 +9,8 @@ export default function Profile () {
     const [email, setEmail] = useState("");
     const [forename, setForename] = useState("");
     const [surname, setSurname] = useState("");
-    const [role, setRole] = useState(false); // NEW
-
+    const [role, setRole] = useState(false);
+    const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState(null);
 
@@ -43,8 +44,58 @@ export default function Profile () {
 
     }, [navigate]);
 
+const fetchOrders = async () => {
+    try {
+
+        const res = await fetch("http://localhost:4000/me/orders", {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        });
+
+        const data = await res.json();
+
+
+        const groupedOrders = [];
+
+        data.forEach(item => {
+
+            let existingOrder = groupedOrders.find(
+                o => o.orderId === item.orderId
+            );
+
+            if (!existingOrder) {
+                existingOrder = {
+                    orderId: item.orderId,
+                    createdAt: item.createdAt,
+                    total: item.total,
+                    status: item.status,
+                    products: []
+                };
+
+                groupedOrders.push(existingOrder);
+            }
+
+            existingOrder.products.push({
+                productId: item.productId,
+                title: item.title,
+                image: item.image,
+                price: item.price,
+                quantity: item.quantity
+            });
+
+        });
+
+        setOrders(groupedOrders);
+
+    } catch (err) {
+        console.log("Error fetching orders", err);
+    }
+};
+
     useEffect(() => {
         fetchUser();
+        fetchOrders();
     }, [fetchUser]);
 
     if (loading) {
@@ -87,7 +138,11 @@ export default function Profile () {
                 <button onClick={() => navigate("/settings")}>
                     Settings
                 </button>
-
+                <button 
+                        onClick={() => navigate("/apply-for-producer")}>
+                        Producer Application
+                    </button>
+                
                 {/* ADMIN BUTTON */}
                 {role === "ADMIN" && (
                     <button 
@@ -96,8 +151,58 @@ export default function Profile () {
                         Admin Dashboard
                     </button>
                 )}
+                {role === "PRODUCER" && (
+                    <button 
+                        onClick={() => navigate("/producer")}
+                    >
+                        Producer Dashboard
+                    </button>
+                )}
                 </div>
-                <h2>Recent purchases:</h2>
+                <h2>Recent purchases</h2>
+                <div className="orders-container">
+                    {orders.length === 0 ? (
+                        <p>No orders yet</p>
+                    ) : (
+                        orders.map(order => (
+                            <div key={order.orderId} className="order-card">
+                                <h3>Order #{order.orderId}</h3>
+                                <p>Date: {order.createdAt}</p>
+                                <p>Total: £{order.total}</p>
+                                <p>Status: {order.status}</p>
+
+                                <h4>Products</h4>
+
+                                {order.products.map(product => (
+                                    <div
+                                        key={product.productId}
+                                        style={{
+                                            display: "flex",
+                                            gap: "10px",
+                                            alignItems: "center",
+                                            marginBottom: "8px"
+                                        }}
+                                    >
+                                        <img
+                                            src={product.image || default_image}
+                                            alt={product.title}
+                                            width="60"
+                                            onError={(e) => {
+                                                e.target.onerror = null; // prevents infinite loop
+                                                e.target.src = default_image;
+                                            }}
+                                        />
+
+                                        <div>
+                                            <p>{product.title}</p>
+                                            <p>Quantity: {product.quantity}</p>
+                                            <p>Price: £{product.price}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ))
+                    )}</div>
             </div>
         </div>
     );

@@ -8,20 +8,26 @@ export default function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:4000/forgot-password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email })
-    });
+    try {
+      const res = await fetch("http://localhost:4000/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email })
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.success) {
-      setMessage("Reset link sent to your email");
-    } else {
-      setMessage("Something went wrong");
+      if (res.ok && data.success) {
+        setMessage("Reset link sent to your email");
+      } else {
+        setMessage(data.message || "Something went wrong");
+      }
+
+    } catch (err) {
+      console.error(err);
+      setMessage("Server error. Try again later.");
     }
   };
 

@@ -1,64 +1,82 @@
 import { useBasket } from "../BasketContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 import farm_food from "../image/farm_food.jpg";
 
 export default function Basket() {
   const navigate = useNavigate();
   const { basket, removeFromBasket, clearBasket } = useBasket();
-
   const [deliveryMethod, setDeliveryMethod] = useState("collection");
   const [address, setAddress] = useState("");
 
   const handleCheckout = async () => {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    if (!token) {
-      window.location.href = "/login";
-      return;
-    }
-
-    if (deliveryMethod === "delivery" && !address) {
-      alert("Please enter a delivery address");
-      return;
-    }
-
-    const response = await fetch(
-      "http://localhost:4000/create-checkout-session",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          items: basket.map(item => ({
-            priceId: item.priceId || item.priceid,
-            quantity: item.quantity
-          })),
-          deliveryMethod,
-          address
-        })
+      if (!token) {
+        alert("Please login first");
+        navigate("/login");
+        return;
       }
-    );
 
-    const data = await response.json();
+      if (!basket || basket.length === 0) {
+        alert("Basket is empty");
+        return;
+      }
 
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      console.error("Checkout error:", data.error);
+      if (deliveryMethod === "delivery" && !address) {
+        alert("Enter delivery address");
+        return;
+      }
+
+      const res = await axios.post(
+        "http://localhost:4000/create-checkout-session",
+        {
+          basket,
+          address,
+          deliveryMethod
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      window.location.href = res.data.url;
+
+    } catch (err) {
+      console.log("Checkout error:", err.response?.data || err.message);
     }
   };
 
   if (basket.length === 0)
     return (
-      <div className="container" style={{ color: "#000000" }}>
+  <div>
+     <div className='parent-container'>
+          <img
+              src={farm_food}
+              style={{
+                  width: "100vw",
+                  height: "170px",
+                  objectFit: "cover",
+                  filter: "brightness(50%)"
+              }}
+          />
+          <div className='bottom-left'>
+              <div className='main-title'>
+                  <b><h2>Basket</h2></b>
+              </div>
+          </div>
+      </div>
+
+      <div className="basket-container" style={{ color: "#000000" }}>
         <div className="basket-actions">
           <button onClick={() => navigate("/products")}>Back</button>
         </div>
         <h2>Your basket is empty</h2>
-      </div>
+      </div></div>
     );
 
   return (

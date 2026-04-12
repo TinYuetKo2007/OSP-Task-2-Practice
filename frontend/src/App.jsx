@@ -1,6 +1,6 @@
 import './App.css'
 const API = "http://localhost:5173";
-import farm_food from "./image/farm_food.jpg"
+import veggie_field from "./image/veggie_field.jpg"
 
 function App() {
   const username = localStorage.getItem("username")
@@ -10,7 +10,7 @@ function App() {
   return (
     <div>
     <div className='parent-container'>
-    <img src={farm_food} style={{
+    <img src={veggie_field} style={{
       width: "100vw",
     height: "600px",
     objectFit: "cover",
