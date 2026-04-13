@@ -149,12 +149,7 @@ export default function ProfileSettings() {
         {editMode ? (
           <div className="form-container">
           <form className="form">
-            <input
-              name="username"
-              value={editForm.username || ""}
-              onChange={handleChange}
-              placeholder="Username"
-            />
+
 
             <input
               name="forename"
@@ -182,7 +177,6 @@ export default function ProfileSettings() {
           </form></div>
         ) : (
           <>
-            <p><b>Username:</b> {user.username}</p>
             <p><b>Forename:</b> {user.forename}</p>
             <p><b>Surname:</b> {user.surname}</p>
             <p><b>Email:</b> {user.email}</p>

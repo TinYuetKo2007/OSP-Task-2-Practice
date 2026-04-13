@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import farm_food from "../image/farm_food.jpg";
 import default_image from "../image/default_image.png";
 
-export default function Profile () {
+export default function Profile() {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
@@ -13,21 +13,30 @@ export default function Profile () {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState(null);
+    const [authChecked, setAuthChecked] = useState(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/login", { replace: true });
+        } else {
+            setAuthChecked(true);
+        }
+    }, [navigate]);
 
     const fetchUser = useCallback(async () => {
-        if (!localStorage.getItem("token")) {
-            return navigate("/login");
-        }
-
         try {
-            setLoading(true);
-
             const res = await fetch("http://localhost:4000/me/profile", {
-                method: "GET",
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
+                    Authorization: "Bearer " + localStorage.getItem("token")
                 }
             });
+
+            if (!res.ok) {
+                navigate("/login");
+                return;
+            }
 
             const data = await res.json();
 
@@ -36,79 +45,70 @@ export default function Profile () {
             setSurname(data.surname);
             setRole(data.role);
 
-            setLoading(false);
         } catch {
-            setErr("Error fetching username");
-            setLoading(false);
+            setErr("Error fetching profile");
         }
-
     }, [navigate]);
 
-const fetchOrders = async () => {
-    try {
-
-        const res = await fetch("http://localhost:4000/me/orders", {
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("token")
-            }
-        });
-
-        const data = await res.json();
-
-
-        const groupedOrders = [];
-
-        data.forEach(item => {
-
-            let existingOrder = groupedOrders.find(
-                o => o.orderId === item.orderId
-            );
-
-            if (!existingOrder) {
-                existingOrder = {
-                    orderId: item.orderId,
-                    createdAt: item.createdAt,
-                    total: item.total,
-                    status: item.status,
-                    products: []
-                };
-
-                groupedOrders.push(existingOrder);
-            }
-
-            existingOrder.products.push({
-                productId: item.productId,
-                title: item.title,
-                image: item.image,
-                price: item.price,
-                quantity: item.quantity
+    const fetchOrders = useCallback(async () => {
+        try {
+            const res = await fetch("http://localhost:4000/me/orders", {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                }
             });
 
-        });
+            if (!res.ok) return;
 
-        setOrders(groupedOrders);
+            const data = await res.json();
 
-    } catch (err) {
-        console.log("Error fetching orders", err);
-    }
-};
+            const groupedOrders = [];
+
+            data.forEach(item => {
+                let existingOrder = groupedOrders.find(
+                    o => o.orderId === item.orderId
+                );
+
+                if (!existingOrder) {
+                    existingOrder = {
+                        orderId: item.orderId,
+                        createdAt: item.createdAt,
+                        total: item.total,
+                        status: item.status,
+                        products: []
+                    };
+
+                    groupedOrders.push(existingOrder);
+                }
+
+                existingOrder.products.push({
+                    productId: item.productId,
+                    title: item.title,
+                    image: item.image,
+                    price: item.price,
+                    quantity: item.quantity
+                });
+            });
+
+            setOrders(groupedOrders);
+
+        } catch (err) {
+            console.log("Error fetching orders", err);
+        }
+    }, []);
 
     useEffect(() => {
-        fetchUser();
-        fetchOrders();
-    }, [fetchUser]);
+        if (authChecked) {
+            fetchUser();
+            fetchOrders();
+            setLoading(false);
+        }
+    }, [authChecked, fetchUser, fetchOrders]);
 
-    if (loading) {
-        return (
-            <div>
-                <h1>Loading...</h1>
-            </div>
-        );
-    }
+    if (!authChecked) return null;
 
-    if (err) {
-        return <h1>{err}</h1>;
-    }
+    if (loading) return <h1>Loading...</h1>;
+    if (err) return <h1>{err}</h1>;
 
     return (
         <div>

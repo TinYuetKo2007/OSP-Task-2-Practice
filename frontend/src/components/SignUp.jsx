@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export default function SignUp() {
-    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [forename, setForename] = useState("");
     const [surname, setSurname] = useState("")
@@ -14,8 +13,8 @@ export default function SignUp() {
  const handleRegister = async (e) => {
         e.preventDefault();
 
-        if (!username ||  !forename || !surname || !email || !password) {
-            setMessage("Please enter username and password.");
+        if (!forename || !surname || !email || !password) {
+            setMessage("Please enter all details.");
             return;
         }
         if (password.length < 8) {
@@ -27,18 +26,17 @@ export default function SignUp() {
             const res = await fetch("http://localhost:4000/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, forename, surname, email, password }),
+                body: JSON.stringify({ forename, surname, email, password }),
             });
 
             const data = await res.json();
 
-            if (data.success) {
-                localStorage.setItem("username", username);
-                if (data.token) {
-                    localStorage.setItem("token", data.token);
-                }
+            if (data.success && data.token) {
+                localStorage.setItem("email", email);
+                localStorage.setItem("token", data.token);
+            
                 setMessage("Registration successful! Redirecting...");
-                setTimeout(() => navigate("/profile"), 1500);
+                navigate("/profile", { replace: true });
             } else {
                 setMessage(data.message || "Registration failed.");
             }
@@ -53,11 +51,6 @@ export default function SignUp() {
                 <button onClick={() => navigate("/")}>Go Back</button>
                     <form className="form" onSubmit={handleRegister}>
                     <h1>Sign Up</h1>
-                    <input 
-                    type="text" 
-                    placeholder="Username" 
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}/>
                     <div style={{display:"flex", flexDirection: "row"}}>
                         <input 
                         type="text" 

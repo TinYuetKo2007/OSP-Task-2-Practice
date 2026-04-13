@@ -147,18 +147,17 @@ const fetchData = useCallback(async () => {
     setEditForm(item);
     }
 
-  if (loading) return <h1>Loading...</h1>;
-  if (err) return <h1>{err}</h1>;
-  if (!user) return <h1>Access denied.</h1>;
-
-  if (user.role === "PRODUCER" && type !== "products") {
-    return <h1>Access denied.</h1>;
-  }
-
-  if (user.role === "ADMIN" && type === "products") {
-    return <h1>Access denied.</h1>;
-  }
-
+    if (loading) return <h1>Loading...</h1>;
+    if (err) return <h1>{err}</h1>;
+    if (!user) return <h1>Access denied.</h1>;
+    
+    if (user.role === "PRODUCER" && type !== "products") {
+      return <h1>Access denied.</h1>;
+    }
+    
+    if (user.role !== "ADMIN" && user.role !== "PRODUCER") {
+      return <h1>Access denied.</h1>;
+    }
 
   async function saveEdit() {
   try {
@@ -193,7 +192,7 @@ const fetchData = useCallback(async () => {
         <thead>
           <tr>
             {type === "users" ? (
-                <><th>Username</th><th>Balance</th><th>Action</th></>
+                <><th>Email</th><th>Balance</th><th>Action</th></>
               ) : type === "contact-messages" ? (
                 <><th>Email</th><th>Message</th><th>Date</th><th>Action</th></>
               ) : type === "producerApplications" ? (
@@ -216,8 +215,8 @@ const fetchData = useCallback(async () => {
               <>
                 <td>
                   <input
-                    name="username"
-                    value={editForm.username}
+                    name="email"
+                    value={editForm.email}
                     onChange={handleChange}
                   />
                 </td>
@@ -302,7 +301,7 @@ const fetchData = useCallback(async () => {
 
             type === "users" ? (
               <>
-                <td>{item.username}</td>
+                <td>{item.email}</td>
                 <td>£{item.balance}</td>
               </>
             )

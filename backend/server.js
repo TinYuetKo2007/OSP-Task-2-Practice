@@ -46,25 +46,58 @@ app.use(
 // REGISTER NEW USER
 
 app.post("/signup", async (req, res) => {
-    const {username, forename, surname, email, password} = req.body;
-    try {
-        const hash = await bcrypt.hash(password, 10)
-        appDB.run(`INSERT INTO users (username, forename, surname, email, password, role) VALUES (?,?,?,?,?,?)`, 
-          [username, forename, surname, email, hash, "USER"], function (err) {
-            if (err)
-                return res.status(400).json({success: false, message: err.message})
-            res.json({success: true})
-        });
-    } catch (err) {
-        res.status(500).json({success: false, message: "Registration failed"})
-    }
+  const { forename, surname, email, password } = req.body;
+
+  try {
+      const hash = await bcrypt.hash(password, 10);
+
+      appDB.run(
+          `INSERT INTO users (forename, surname, email, password, role) VALUES (?,?,?,?,?)`,
+          [forename, surname, email, hash, "USER"],
+          function (err) {
+              if (err) {
+                  return res.status(400).json({
+                      success: false,
+                      message: err.message
+                  });
+              }
+
+              // 🔥 NEW: get inserted user id
+              const userId = this.lastID;
+
+              // 🔥 create token
+              const token = jwt.sign(
+                  {
+                      email,
+                      id: userId,
+                      role: "USER"
+                  },
+                  process.env.JWT_SECRET_KEY,
+                  {
+                      expiresIn: process.env.JWT_LIFETIME
+                  }
+              );
+
+              return res.json({
+                  success: true,
+                  token
+              });
+          }
+      );
+
+  } catch (err) {
+      res.status(500).json({
+          success: false,
+          message: "Registration failed"
+      });
+  }
 });
 
 
 //LOGIN USER
 app.post("/login", (req, res) => {
-    const { username, password } = req.body;
-    appDB.get(`SELECT * FROM users WHERE username = ?`, [username], async (err, row) => {
+    const { email, password } = req.body;
+    appDB.get(`SELECT * FROM users WHERE email = ?`, [email], async (err, row) => {
       if (err) return res.status(500).json({ success: false, message: err.message });
       if (!row)
         return res.status(401).json({ success: false, message: "User not found" });
@@ -74,7 +107,7 @@ app.post("/login", (req, res) => {
       if (match) {
         console.log(process.env.JWT_LIFETIME)
 
-        const token = jwt.sign({ username, id: row.id, role: row.role }, process.env.JWT_SECRET_KEY, {
+        const token = jwt.sign({ email, id: row.id, role: row.role }, process.env.JWT_SECRET_KEY, {
             expiresIn: process.env.JWT_LIFETIME
         });
         res.json({ success: true, message: "Login successful", token });
@@ -85,79 +118,66 @@ app.post("/login", (req, res) => {
   });
 
 
-app.post("/create-checkout-session", async (req, res) => {
-  try {
-    const { basket, address, deliveryMethod } = req.body;
-
-    if (!basket || basket.length === 0) {
-      return res.status(400).json({ error: "Basket is empty" });
-    }
-
-    const preparedBasket = basket.map(item => ({
-      id: item.id,
-      productId: item.productId,
-      title: item.title || "Item",
-      price: item.price,
-      image: item.image || "",
-      quantity: item.quantity || 1
-    }));
-
-    if (deliveryMethod === "delivery") {
-
-      const deliveryProduct = await fetchOne(
-        appDB,
-        "SELECT * FROM products WHERE title = ?",
-        ["Delivery Fee"]
-      );
-
-      if (!deliveryProduct) {
-        return res.status(400).json({ error: "Delivery fee not found" });
+  app.post("/create-checkout-session", verify, async (req, res) => {
+    try {
+      const { basket, address, deliveryMethod } = req.body;
+  
+      if (!basket || basket.length === 0) {
+        return res.status(400).json({ error: "Basket is empty" });
+      }
+  
+      const preparedBasket = basket.map(item => ({
+        productId: item.productId,
+        title: item.title,
+        price: item.price,
+        image: item.image || "",
+        quantity: item.quantity || 1
+      }));
+  
+      const lineItems = preparedBasket.map(item => ({
+        price_data: {
+          currency: "gbp",
+          product_data: {
+            name: item.title,
+            images: item.image ? [item.image] : []
+          },
+          unit_amount: Math.round(item.price * 100)
+        },
+        quantity: item.quantity
+      }));
+      
+      if (deliveryMethod === "delivery") {
+        lineItems.push({
+          price_data: {
+            currency: "gbp",
+            product_data: {
+              name: "Delivery Fee"
+            },
+            unit_amount: 300
+          },
+          quantity: 1
+        });
       }
 
-      preparedBasket.push({
-        id: deliveryProduct.id,
-        productId: deliveryProduct.productId,
-        title: deliveryProduct.title,
-        price: deliveryProduct.price,
-        image: deliveryProduct.image || "",
-        quantity: 1
-      });
-    }
-
-    const lineItems = preparedBasket.map(item => ({
-      price_data: {
-        currency: "gbp",
-        product_data: {
-          name: item.title,
-          images: item.image ? [item.image] : []
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: lineItems,
+        mode: "payment",
+        metadata: {
+          address: address || "collection",
+          deliveryMethod
         },
-        unit_amount: Math.round(item.price * 100)
-      },
-      quantity: item.quantity
-    }));
-
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: lineItems,
-      mode: "payment",
-      metadata: {
-        basket: JSON.stringify(preparedBasket),
-        address: address || "collection",
-        deliveryMethod
-      },
-      success_url: `${process.env.CLIENT_URL}/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.CLIENT_URL}/basket`
-    });
-
-    console.log("Basket sent to Stripe:", preparedBasket);
-
-    res.json({ url: session.url });
-
-  } catch (err) {
-    console.error("CREATE CHECKOUT ERROR:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
+        success_url: `${process.env.CLIENT_URL}/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.CLIENT_URL}/basket`
+      });
+  
+      res.json({ url: session.url });
+  
+    } catch (err) {
+      console.error("CREATE CHECKOUT ERROR:", err);
+      res.status(500).json({ error: err.message });
+    }
+  });
 
 app.post("/contact-messages", async (req, res) => {
   const { email, text } = req.body;
@@ -313,8 +333,7 @@ app.post("/sync-stripe-products", verify, async (req, res) => {
   }
 
   try {
-
-    console.log("Syncing Stripe catalog...");
+    console.log(`Sync started by user ${req.user.id} (${req.user.role})`);
 
     const productsRes = await stripe.products.list({
       limit: 100,
@@ -332,10 +351,33 @@ app.post("/sync-stripe-products", verify, async (req, res) => {
       }
     }
 
+    let syncedCount = 0;
+
     for (const product of productsRes.data) {
 
       const price = priceMap[product.id];
       if (!price) continue;
+
+      if (
+        req.user.role === "PRODUCER" &&
+        product.metadata?.producerId !== String(req.user.id)
+      ) {
+        continue;
+      }
+
+      const allowedCategories = ["Fruit", "Veg", "Dairy", "Meat", "Other"];
+      const category = allowedCategories.includes(product.metadata?.category)
+        ? product.metadata.category
+        : "Other";
+
+      const title = (product.name || "").substring(0, 255);
+      const description = (product.description || "").substring(0, 1000);
+      const image = product.images?.[0] || "";
+
+      const producerId =
+        req.user.role === "ADMIN"
+          ? (product.metadata?.producerId || null)
+          : req.user.id;
 
       await execute(
         appDB,
@@ -343,22 +385,26 @@ app.post("/sync-stripe-products", verify, async (req, res) => {
         (title, description, price, priceId, productId, image, category, stock, producerId)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          product.name,
-          product.description || "",
+          title,
+          description,
           price.unit_amount / 100,
           price.id,
           product.id,
-          product.images?.[0] || "",
-          product.metadata?.category || "general",
+          image,
+          category,
           0,
-          req.user.id
+          producerId
         ]
       );
+      syncedCount++;
     }
 
-    console.log("Stripe sync completed");
+    console.log(`Sync completed: ${syncedCount} products added`);
 
-    res.json({ success: true });
+    res.json({
+      success: true,
+      message: `Synced ${syncedCount} products`
+    });
 
   } catch (err) {
     console.error("SYNC ERROR:", err);
@@ -488,8 +534,6 @@ app.get("/producerApplications", async (req, res) => {
       "SELECT * FROM producerApplications"
     );
 
-    console.log(applications);
-
     res.json({ applications });
   } catch (err) {
     console.error(err);
@@ -497,7 +541,78 @@ app.get("/producerApplications", async (req, res) => {
   }
 });
 
+const optionalVerify = (req, res, next) => {
+  const auth = req.headers.authorization;
 
+  if (!auth) {
+    req.user = { role: "GUEST" };
+    return next();
+  }
+
+  const token = auth.split(" ")[1];
+
+  if (!token || token === "null" || token === "undefined") {
+    req.user = { role: "GUEST" };
+    return next();
+  }
+
+  try {
+    req.user = jwt.verify(token, process.env.JWT_SECRET_KEY);
+  } catch (err) {
+    req.user = { role: "GUEST" };
+  }
+
+  next();
+};
+
+app.get("/products", optionalVerify, async (req, res) => {
+  try {
+
+    let products = [];
+
+    switch (req.user.role) {
+
+      case "PRODUCER":
+        products = await fetchAll(
+          appDB,
+          `SELECT * FROM products
+           WHERE producerId = ?
+           AND title != 'Delivery Fee'`,
+          [req.user.id]
+        );
+        break;
+    
+      case "ADMIN":
+        products = await fetchAll(
+          appDB,
+          `SELECT * FROM products
+           WHERE title != 'Delivery Fee'`
+        );
+        break;
+    
+      case "USER":
+      case "GUEST":
+        products = await fetchAll(
+          appDB,
+          `SELECT * FROM products
+           WHERE title != 'Delivery Fee'
+           AND stock > 0`
+        );
+        break;
+    
+      default:
+        return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    res.json(products);
+
+  } catch (err) {
+    console.error("GET PRODUCTS ERROR:", err);
+    res.status(500).json({
+      error: "Failed to fetch products"
+    });
+  }
+});
 
 app.use(verify);
 /* JWT is valid or not
@@ -506,16 +621,16 @@ app.get("/me", verify, (req, res) => {
   return res.json(req.user)
 });
 app.get("/me/profile", verify, async (req, res) => {
-  const users = await fetchAll(appDB, `SELECT * FROM users WHERE username = ?`, [req.user.username]);
+  const users = await fetchAll(appDB, `SELECT * FROM users WHERE email = ?`, [req.user.email]);
   return res.json(users[0]);
 });
 
 app.put("/users/me", verify, async (req, res) => {
   try {
     const userId = req.user.id;
-    const { username, forename, surname, email } = req.body;
+    const {forename, surname, email } = req.body;
 
-    if (!username || !forename || !surname || !email) {
+    if (!forename || !surname || !email) {
       return res.status(400).json({
         error: "All fields are required"
       });
@@ -525,10 +640,10 @@ app.put("/users/me", verify, async (req, res) => {
       appDB,
       `
       UPDATE users
-      SET username = ?, forename = ?, surname = ?, email = ?
+      SET forename = ?, surname = ?, email = ?
       WHERE id = ?
       `,
-      [username, forename, surname, email, userId]
+      [forename, surname, email, userId]
     );
 
     res.json({
@@ -546,134 +661,119 @@ app.put("/users/me", verify, async (req, res) => {
 
 app.get("/me/orders", verify, async (req, res) => {
   try {
-
     const rows = await fetchAll(
       appDB,
       `
-      SELECT 
-        orders.id as orderId,
-        orders.total,
-        orders.deliveryMethod,
-        orders.address,
-        orders.status,
-        orders.createdAt,
+        SELECT 
+          orders.id as orderId,
+          orders.total,
+          orders.deliveryMethod,
+          orders.address,
+          orders.status,
+          orders.createdAt,
 
-        orderProducts.productId,
-        orderProducts.title,
-        orderProducts.image,
-        orderProducts.price,
-        orderProducts.quantity
+          orderProducts.productId,
+          orderProducts.quantity,
+          orderProducts.price,
 
-      FROM orders
+          COALESCE(products.title, orderProducts.title) as title,
+          COALESCE(products.image, orderProducts.image) as image
 
-      LEFT JOIN orderProducts
-      ON orders.id = orderProducts.orderId
-
-      WHERE orders.userId = ?
-
-      ORDER BY orders.createdAt DESC
+        FROM orders
+        LEFT JOIN orderProducts
+          ON orders.id = orderProducts.orderId
+        LEFT JOIN products
+          ON products.productId = orderProducts.productId
+        WHERE orders.userId = ?
+        ORDER BY orders.createdAt DESC
       `,
       [req.user.id]
     );
 
-    res.json(rows);
+    res.json(rows || []);
 
   } catch (err) {
     console.error("ORDERS FETCH ERROR:", err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json([]);
   }
 });
 
 app.post("/orders/store", verify, async (req, res) => {
-  console.log("STORE ORDER HIT", req.body);
-
   try {
     const { sessionId } = req.body;
 
-    if (!sessionId)
-      return res.status(400).json({ error: "No session ID" });
-
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    if (!session)
-      return res.status(400).json({ error: "Session not found" });
-
-    if (session.payment_status !== "paid")
-      return res.status(400).json({ error: "Payment not completed" });
-
-    let basket = [];
-
-    try {
-      basket = session.metadata.basket
-        ? JSON.parse(session.metadata.basket)
-        : [];
-    } catch (err) {
-      console.log("Basket parse error:", err);
-      return res.status(400).json({ error: "Invalid basket data" });
+    if (!session || session.payment_status !== "paid") {
+      return res.status(400).json({ error: "Invalid session" });
     }
 
-    const address = session.metadata.address || "";
-    const deliveryMethod = session.metadata.deliveryMethod || "collection";
+    const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
 
     const order = await execute(
       appDB,
-      `INSERT INTO orders 
-       (userId, deliveryMethod, address, stripeSessionId, total, status)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        req.user.id,
-        deliveryMethod,
-        address,
-        session.id,
-        session.amount_total / 100,
-        "paid"
-      ]
+      `INSERT INTO orders (userId, total, status)
+       VALUES (?, ?, ?)`,
+      [req.user.id, session.amount_total / 100, "paid"]
     );
 
     const orderId = order.lastID;
 
- for (const item of basket) {
+    for (const item of lineItems.data) {
 
-      console.log("Processing item:", item);
-
+      const title = item.description;
+    
+      const isDeliveryFee = title === "Delivery Fee";
+    
+      const deliveryImage = "/images/delivery.png";
+    
+      const unitPrice = item.amount_total / item.quantity / 100;
+    
+      let product = null;
+    
+      if (!isDeliveryFee) {
+        product = await fetchOne(
+          appDB,
+          "SELECT * FROM products WHERE title = ?",
+          [title]
+        );
+    
+        if (product) {
+          await updateStock(product.productId, -item.quantity);
+        }
+      }
+    
       await execute(
         appDB,
         `INSERT INTO orderProducts
-        (orderId, productId, quantity, price, title, image)
-        VALUES (?, ?, ?, ?, ?, ?)`,
+         (orderId, productId, quantity, price, title, image)
+         VALUES (?, ?, ?, ?, ?, ?)`,
         [
           orderId,
-          item.productId,
+          product ? product.productId : null,
           item.quantity,
-          item.price,
-          item.title,
-          item.image
+          unitPrice,
+          title,
+          isDeliveryFee ? deliveryImage : (product?.image || null)
         ]
       );
-
-      // skip delivery fee
-      if (item.title === "Delivery Fee") continue;
-
-      // decrease stock using DB id
-      await updateStock(item.id, -item.quantity);
-
     }
 
-        res.json({ success: true, orderId });
+    res.json({ success: true, orderId });
 
-      } catch (err) {
-        console.error("STORE ORDER ERROR:", err);
-        res.status(500).json({ error: "Server error" });
-      }
+  } catch (err) {
+    console.error("ORDER STORE ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // only work for admins
-app.get("/users", async (req, res) => {
+app.get("/users", verify, async (req, res) => {
     const userid = req.user.id;
     if (req.user.role !== "ADMIN") {
       return res.json({success: false})
     }
-  const users = await fetchAll(appDB, `SELECT username, role FROM users`)
+  const users = await fetchAll(appDB, `SELECT email, role FROM users`)
   return res.json({users}) // Returns reports to user
 })
 
@@ -735,9 +835,9 @@ app.put("/contact-messages/:id", verify, (req, res) => {
 app.put("/users/me", verify, async (req, res) => {
   try {
     const userId = req.user.id;
-    const { username, forename, surname, email } = req.body;
+    const {forename, surname, email } = req.body;
 
-    if (!username || !forename || !surname || !email) {
+    if (!forename || !surname || !email) {
       return res.status(400).json({
         error: "All fields are required"
       });
@@ -747,10 +847,10 @@ app.put("/users/me", verify, async (req, res) => {
       appDB,
       `
       UPDATE users
-      SET username = ?, forename = ?, surname = ?, email = ?
+      SET forename = ?, surname = ?, email = ?
       WHERE id = ?
       `,
-      [username, forename, surname, email, userId]
+      [forename, surname, email, userId]
     );
 
     res.json({
@@ -870,7 +970,6 @@ app.put("/:type/:id", verify, async (req, res) => {
 
     let finalPriceId = product.priceId;
 
-    // Only create new Stripe price if price changed
     if (product.productId && Number(price) !== Number(product.price)) {
       try {
         const newPrice = await stripe.prices.create({
@@ -918,18 +1017,18 @@ app.put("/:type/:id", verify, async (req, res) => {
         return res.status(403).json({ error: "Unauthorized" });
       }
 
-      const { username, balance } = data;
+      const { email, balance } = data;
 
-      if (!username || balance === undefined) {
+      if (!email || balance === undefined) {
         return res.status(400).json({ error: "Missing fields" });
       }
 
       await execute(
         appDB,
         `UPDATE users
-         SET username = ?, balance = ?
+         SET email = ?, balance = ?
          WHERE id = ?`,
-        [username, Number(balance), id]
+        [email, Number(balance), id]
       );
 
       return res.json({ message: "User updated successfully" });
@@ -941,57 +1040,7 @@ app.put("/:type/:id", verify, async (req, res) => {
   }
 });
 
-app.get("/products", verify, async (req, res) => {
-  try {
 
-    let products = [];
-
-    switch (req.user.role) {
-
-      case "PRODUCER":
-        products = await fetchAll(
-          appDB,
-          `SELECT * FROM products
-           WHERE producerId = ?
-           AND title != 'Delivery Fee'`,
-          [req.user.id]
-        );
-        break;
-
-      case "ADMIN":
-        products = await fetchAll(
-          appDB,
-          `SELECT * FROM products`
-        );
-        break;
-
-      case "USER":
-        products = await fetchAll(
-          appDB,
-          `SELECT * FROM products
-           WHERE title != 'Delivery Fee'
-           AND stock > 0`
-        );
-        break;
-
-      default:
-        return res.status(403).json({
-          error: "Unauthorized"
-        });
-    }
-
-    res.json(products);
-
-  } catch (err) {
-
-    console.error("GET PRODUCTS ERROR:", err);
-
-    res.status(500).json({
-      error: "Failed to fetch products"
-    });
-
-  }
-});
 
 // Producer Application
 const storage = multer.diskStorage({
@@ -1107,6 +1156,22 @@ app.put("/producerApplications/:id/approve", verify, async (req, res) => {
 
     if (!application) {
       return res.status(404).json({ error: "Application not found" });
+    }
+
+    const user = await fetchOne(
+      appDB,
+      "SELECT id, role FROM users WHERE id = ?",
+      [application.userId]
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.role === "ADMIN") {
+      return res.status(400).json({
+        error: "Cannot downgrade an ADMIN user"
+      });
     }
 
     await execute(
