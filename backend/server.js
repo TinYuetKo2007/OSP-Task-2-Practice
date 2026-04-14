@@ -62,10 +62,8 @@ app.post("/signup", async (req, res) => {
                   });
               }
 
-              // 🔥 NEW: get inserted user id
               const userId = this.lastID;
 
-              // 🔥 create token
               const token = jwt.sign(
                   {
                       email,
@@ -773,8 +771,8 @@ app.get("/users", verify, async (req, res) => {
     if (req.user.role !== "ADMIN") {
       return res.json({success: false})
     }
-  const users = await fetchAll(appDB, `SELECT email, role FROM users`)
-  return res.json({users}) // Returns reports to user
+  const users = await fetchAll(appDB, `SELECT id, email, role FROM users`)
+  return res.json({users})
 })
 
 app.get("/contact-messages", verify, async (req, res) => {
@@ -1228,7 +1226,7 @@ app.put("/producerApplications/:id/deny", verify, async (req, res) => {
 app.get("/reports", verify, async (req, res) => {
   const userid = req.user.id;
   const reports = await fetchAll(appDB, `SELECT * FROM reports WHERE id = ?`, [userid])
-  return res.json({reports}) // Returns reports to user
+  return res.json({reports})
 });
 
 app.post("/reports", verify, async (req, res) => {

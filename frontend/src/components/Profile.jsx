@@ -57,18 +57,18 @@ export default function Profile() {
                     Authorization: "Bearer " + localStorage.getItem("token")
                 }
             });
-
+    
             if (!res.ok) return;
-
+    
             const data = await res.json();
-
+    
             const groupedOrders = [];
-
+    
             data.forEach(item => {
                 let existingOrder = groupedOrders.find(
                     o => o.orderId === item.orderId
                 );
-
+    
                 if (!existingOrder) {
                     existingOrder = {
                         orderId: item.orderId,
@@ -77,10 +77,10 @@ export default function Profile() {
                         status: item.status,
                         products: []
                     };
-
+    
                     groupedOrders.push(existingOrder);
                 }
-
+    
                 existingOrder.products.push({
                     productId: item.productId,
                     title: item.title,
@@ -89,22 +89,29 @@ export default function Profile() {
                     quantity: item.quantity
                 });
             });
-
-            setOrders(groupedOrders);
-
+    
+            const recentOrders = groupedOrders
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 10);
+    
+            setOrders(recentOrders);
+    
         } catch (err) {
             console.log("Error fetching orders", err);
         }
     }, []);
 
     useEffect(() => {
-        if (authChecked) {
-            fetchUser();
-            fetchOrders();
-            setLoading(false);
-        }
+        const loadData = async () => {
+            if (authChecked) {
+                await fetchUser();
+                await fetchOrders();
+                setLoading(false);
+            }
+        };
+    
+        loadData();
     }, [authChecked, fetchUser, fetchOrders]);
-
     if (!authChecked) return null;
 
     if (loading) return <h1>Loading...</h1>;
